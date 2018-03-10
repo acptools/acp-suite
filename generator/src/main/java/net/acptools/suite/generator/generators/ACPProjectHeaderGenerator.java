@@ -1,15 +1,16 @@
-package net.acptools.suite.generator.compilation;
+package net.acptools.suite.generator.generators;
 
 import java.util.*;
 
-import net.acptools.suite.generator.compilation.ACPCompiler.CompilationContext;
-import net.acptools.suite.generator.components.Instance;
-import net.acptools.suite.generator.modules.ComponentType;
-import net.acptools.suite.generator.modules.Library;
-import net.acptools.suite.generator.modules.Module;
-import net.acptools.suite.generator.platform.Platform;
-import net.acptools.suite.generator.project.Component;
-import net.acptools.suite.generator.project.Project;
+import net.acptools.suite.generator.ACPCompiler.CompilationContext;
+import net.acptools.suite.generator.CompilationException;
+import net.acptools.suite.generator.models.components.Instance;
+import net.acptools.suite.generator.models.modules.ComponentType;
+import net.acptools.suite.generator.models.modules.Library;
+import net.acptools.suite.generator.models.modules.Module;
+import net.acptools.suite.generator.Platform;
+import net.acptools.suite.generator.models.project.Component;
+import net.acptools.suite.generator.models.project.Project;
 import net.acptools.suite.generator.utils.FileUtils;
 
 /**

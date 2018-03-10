@@ -1,4 +1,8 @@
-package net.acptools.suite.generator.platform;
+package net.acptools.suite.generator;
+
+import net.acptools.suite.generator.platforms.ArduinoMegaPlatform;
+import net.acptools.suite.generator.platforms.ArduinoPlatform;
+import net.acptools.suite.generator.platforms.ArduinoUnoPlatform;
 
 /**
  * Hardware and compilation platform.

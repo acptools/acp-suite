@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import net.acptools.suite.generator.compilation.ACPCompiler;
-import net.acptools.suite.generator.compilation.CompilationSettings;
+import net.acptools.suite.generator.ACPCompiler;
+import net.acptools.suite.generator.CompilationSettings;
 import net.acptools.suite.generator.utils.FileUtils;
 import net.miginfocom.swing.MigLayout;
 

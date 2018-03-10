@@ -1,14 +1,11 @@
-package net.acptools.suite.generator.compilation;
+package net.acptools.suite.generator.generators;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import net.acptools.suite.generator.compilation.ACPCompiler.CompilationContext;
+import net.acptools.suite.generator.ACPCompiler;
+import net.acptools.suite.generator.ACPCompiler.CompilationContext;
+import net.acptools.suite.generator.CompilationException;
 import net.acptools.suite.generator.utils.FileUtils;
 
 /**

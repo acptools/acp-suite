@@ -21,7 +21,7 @@
         <version.javadoc.plugin>3.0.0</version.javadoc.plugin>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <exec.mainClass></exec.mainClass>
+        <exec.mainClass />
     </properties>
 
     <modules>

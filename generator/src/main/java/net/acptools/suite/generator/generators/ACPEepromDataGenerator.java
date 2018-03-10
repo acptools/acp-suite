@@ -1,9 +1,9 @@
-package net.acptools.suite.generator.compilation;
+package net.acptools.suite.generator.generators;
 
 import java.io.File;
 import java.util.*;
 
-import net.acptools.suite.generator.compilation.ACPCompiler.CompilationContext;
+import net.acptools.suite.generator.ACPCompiler.CompilationContext;
 
 /**
  * Generator of header file for EEPROM variables support.

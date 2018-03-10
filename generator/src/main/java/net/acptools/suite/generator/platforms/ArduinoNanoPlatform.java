@@ -1,4 +1,4 @@
-package net.acptools.suite.generator.platform;
+package net.acptools.suite.generator.platforms;
 
 public class ArduinoNanoPlatform extends ArduinoPlatform {
 

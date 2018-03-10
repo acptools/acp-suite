@@ -1,4 +1,4 @@
-package net.acptools.suite.generator.compilation;
+package net.acptools.suite.generator;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,14 +6,14 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
-import net.acptools.suite.generator.components.ConfigurationException;
-import net.acptools.suite.generator.components.PropertyType;
-import net.acptools.suite.generator.modules.ComponentType;
-import net.acptools.suite.generator.modules.Library;
-import net.acptools.suite.generator.modules.Module;
-import net.acptools.suite.generator.platform.Platform;
-import net.acptools.suite.generator.project.Component;
-import net.acptools.suite.generator.project.Project;
+import net.acptools.suite.generator.generators.*;
+import net.acptools.suite.generator.models.components.ConfigurationException;
+import net.acptools.suite.generator.models.components.PropertyType;
+import net.acptools.suite.generator.models.modules.ComponentType;
+import net.acptools.suite.generator.models.modules.Library;
+import net.acptools.suite.generator.models.modules.Module;
+import net.acptools.suite.generator.models.project.Component;
+import net.acptools.suite.generator.models.project.Project;
 
 /**
  * Compiler of ACP projects.

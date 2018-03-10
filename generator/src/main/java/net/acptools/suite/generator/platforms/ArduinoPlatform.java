@@ -1,4 +1,6 @@
-package net.acptools.suite.generator.platform;
+package net.acptools.suite.generator.platforms;
+
+import net.acptools.suite.generator.Platform;
 
 /**
  * Basic 16bit Arduino platform.

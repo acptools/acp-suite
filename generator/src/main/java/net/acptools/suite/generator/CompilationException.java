@@ -1,4 +1,4 @@
-package net.acptools.suite.generator.compilation;
+package net.acptools.suite.generator;
 
 /**
  * Exception indicating a compilation problem.
