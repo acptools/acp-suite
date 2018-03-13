@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<component-type name="project">
+    <description>Project component module.</description>
+    <properties>
+        <property>
+            <name>EepromLayoutVersion</name>
+            <type>int</type>
+        </property>
+        <property>
+            <name>PlatformName</name>
+            <type>string</type>
+            <value type="default">ArduinoUno</value>
+        </property>
+        <property>
+            <name>WatchdogLevel</name>
+            <type>int</type>
+        </property>
+    </properties>
+    <events>
+        <event>
+            <name>OnStart</name>
+            <binding type="attribute">tickEvent</binding>
+            <description>Event triggered when application starts.</description>
+        </event>
+        <event>
+            <name>OnLoop</name>
+            <binding type="attribute">tickEvent</binding>
+            <description>Event triggered when application loops.</description>
+        </event>
+    </events>
+</component-type>

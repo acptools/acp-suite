@@ -1,39 +1,96 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>net.acptools.suite</groupId>
-		<artifactId>suite-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>net.acptools.suite</groupId>
+        <artifactId>suite-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-	<artifactId>ide</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>ide</artifactId>
+    <packaging>jar</packaging>
 
-	<name>${project.groupId}:${project.artifactId}</name>
-	<description>ACP IDE.</description>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>ACP IDE.</description>
 
-	<properties>
-		<exec.mainClass>net.acptools.suite.ide.App</exec.mainClass>
-	</properties>
+    <properties>
+        <exec.mainClass>net.acptools.suite.ide.App</exec.mainClass>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>generator</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>generator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka.thirdparty/java-cup-11b-runtime -->
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka.thirdparty</groupId>
+            <artifactId>java-cup-11b-runtime</artifactId>
+            <version>2015.03.26</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fifesoft/autocomplete -->
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>autocomplete</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.swinglabs/swingx -->
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.dockingframes/docking-frames-common -->
+        <dependency>
+            <groupId>org.dockingframes</groupId>
+            <artifactId>docking-frames-common</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/sk.gbox.swing/properties-panel -->
+        <dependency>
+            <groupId>sk.gbox.swing</groupId>
+            <artifactId>properties-panel</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/platform -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>platform</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -1,0 +1,33 @@
+<project name="ast-parser" basedir="." default="generate">
+
+    <!-- PROPERTIES -->
+    <property file="build.properties"/>
+
+    <!-- TASKs -->
+
+    <target name="clean">
+        <delete file="src/generated/"/>
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${bin}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="jflex" depends="init">
+        <java jar="${jflex.jar}" fork="true">
+            <arg line="${jflex.args}"/>
+        </java>
+    </target>
+
+    <target name="cup">
+        <java jar="${cup.jar}" fork="true">
+            <arg line="${cup.args}"/>
+        </java>
+    </target>
+
+    <target name="generate" depends="jflex, cup">
+        <echo message="Executed JFlex and CUP tasks"/>
+    </target>
+
+</project>

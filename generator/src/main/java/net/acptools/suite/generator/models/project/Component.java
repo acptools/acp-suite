@@ -6,6 +6,7 @@ import java.util.Map;
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.XmlUtils;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -162,5 +163,56 @@ public class Component {
         } catch (ConfigurationException e) {
             throw new ConfigurationException("Configuration of component " + name + " contains errors.", e);
         }
+    }
+
+    public void writeToXml(Element xmlComponent) {
+        Document doc = xmlComponent.getOwnerDocument();
+
+        Element xmlName = doc.createElement("name");
+        xmlName.setTextContent(getName());
+        xmlComponent.appendChild(xmlName);
+        Element xmlType = doc.createElement("type");
+        xmlType.setTextContent(getType());
+        xmlComponent.appendChild(xmlType);
+        if (getDescription() != null && getDescription().length() > 0) {
+            Element xmlDescription = doc.createElement("description");
+            xmlDescription.setTextContent(getDescription());
+            xmlComponent.appendChild(xmlDescription);
+        }
+
+        Element xmlProperties = writeProperties(doc, doc.createElement("properties"));
+        if (xmlProperties != null) {
+            xmlComponent.appendChild(xmlProperties);
+        }
+        Element xmlEvents = writeEvents(doc, doc.createElement("events"));
+        if (xmlEvents != null) {
+            xmlComponent.appendChild(xmlEvents);
+        }
+    }
+
+    private Element writeEvents(Document doc, Element xmlEvents) {
+        if (getEvents().size() == 0) {
+            return null;
+        }
+        for (Map.Entry<String, String> entry : getEvents().entrySet()) {
+            Element xmlEvent = doc.createElement("event");
+            xmlEvent.setAttribute("name", entry.getKey());
+            xmlEvent.setTextContent(entry.getValue());
+            xmlEvents.appendChild(xmlEvent);
+        }
+        return xmlEvents;
+    }
+
+    private Element writeProperties(Document doc, Element xmlProperties) {
+        if (getProperties().size() == 0) {
+            return null;
+        }
+        for (Map.Entry<String, String> entry : getProperties().entrySet()) {
+            Element xmlProperty = doc.createElement("property");
+            xmlProperty.setAttribute("name", entry.getKey());
+            xmlProperty.setTextContent(entry.getValue());
+            xmlProperties.appendChild(xmlProperty);
+        }
+        return xmlProperties;
     }
 }

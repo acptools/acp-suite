@@ -1,10 +1,10 @@
 package net.acptools.suite.generator.models.components;
 
-import java.util.*;
-
+import net.acptools.suite.generator.utils.XmlUtils;
 import org.w3c.dom.Element;
 
-import net.acptools.suite.generator.utils.XmlUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Description of an event provided by a component.
@@ -68,6 +68,11 @@ public class Event {
     private String resultType;
 
     /**
+     * Description about what property change is this event handles.
+     */
+    private String description;
+
+    /**
      * Ordered list of parameters of the event.
      */
     private final List<ParameterType> parameters = new ArrayList<>();
@@ -82,6 +87,10 @@ public class Event {
 
     public String getResultType() {
         return resultType;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public List<ParameterType> getParameters() {
@@ -129,6 +138,9 @@ public class Event {
         if (xmlResultType != null) {
             resultType = xmlResultType.getTextContent().trim();
         }
+
+        // Read description
+        description = XmlUtils.getSimplePropertyValue(xmlElement, "description", "");
     }
 
     // ---------------------------------------------------------------------------

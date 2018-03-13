@@ -3,6 +3,7 @@ package net.acptools.suite.generator.models.project;
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.XmlUtils;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -150,5 +151,11 @@ public class EepromItem {
         } catch (ConfigurationException e) {
             throw new ConfigurationException("Configuration of component " + name + " contains errors.", e);
         }
+    }
+
+    public Element writeToXml(Document doc)
+    {
+        Element xmlEepromItem = doc.createElement(getLengthOfArray() == -1 ? "variable" : "array");
+        return xmlEepromItem;
     }
 }

@@ -1,17 +1,15 @@
 package net.acptools.suite.generator.models.modules;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import net.acptools.suite.generator.models.components.ConfigurationException;
+import net.acptools.suite.generator.utils.XmlUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import net.acptools.suite.generator.models.components.ConfigurationException;
-import net.acptools.suite.generator.utils.XmlUtils;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Description of a ACP module. A module can be a component (type) or a library.
@@ -62,6 +60,11 @@ abstract public class Module {
     private String name;
 
     /**
+     * Component type description for programmer.
+     */
+    private String description;
+
+    /**
      * Names of modules that are required for this module.
      */
     private final List<String> requiredModules = new ArrayList<String>();
@@ -89,6 +92,14 @@ abstract public class Module {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<String> getRequiredModules() {
@@ -194,6 +205,7 @@ abstract public class Module {
         if (name.isEmpty()) {
             throw new ConfigurationException("Name of the module cannot be empty.");
         }
+        description = XmlUtils.getSimplePropertyValue(xmlModule, "description", "");
     }
 
     /**
