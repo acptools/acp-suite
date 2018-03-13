@@ -1,4 +1,4 @@
-package net.acptools.suite.generator.components;
+package net.acptools.suite.generator.models.components;
 
 /**
  * Exception indicating error in description of a component.

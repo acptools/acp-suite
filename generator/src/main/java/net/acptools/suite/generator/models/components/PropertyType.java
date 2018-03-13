@@ -1,4 +1,4 @@
-package net.acptools.suite.generator.components;
+package net.acptools.suite.generator.models.components;
 
 import org.w3c.dom.Element;
 

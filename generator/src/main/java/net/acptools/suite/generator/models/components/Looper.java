@@ -1,6 +1,6 @@
-package net.acptools.suite.generator.components;
+package net.acptools.suite.generator.models.components;
 
-import net.acptools.suite.generator.modules.ComponentType;
+import net.acptools.suite.generator.models.modules.ComponentType;
 import net.acptools.suite.generator.utils.XmlUtils;
 
 import org.w3c.dom.Element;

@@ -1,4 +1,4 @@
-package net.acptools.suite.generator.project;
+package net.acptools.suite.generator.models.project;
 
 import java.io.File;
 import java.util.*;
@@ -6,7 +6,7 @@ import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import net.acptools.suite.generator.components.ConfigurationException;
+import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.XmlUtils;
 
 import org.w3c.dom.Document;

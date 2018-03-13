@@ -1,11 +1,11 @@
-package net.acptools.suite.generator.components;
+package net.acptools.suite.generator.models.components;
 
 import java.util.*;
 
-import net.acptools.suite.generator.compilation.CompilationException;
-import net.acptools.suite.generator.modules.ComponentType;
-import net.acptools.suite.generator.platform.Platform;
-import net.acptools.suite.generator.project.Component;
+import net.acptools.suite.generator.CompilationException;
+import net.acptools.suite.generator.models.modules.ComponentType;
+import net.acptools.suite.generator.Platform;
+import net.acptools.suite.generator.models.project.Component;
 import net.acptools.suite.generator.utils.XmlUtils;
 
 import org.w3c.dom.Element;

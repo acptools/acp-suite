@@ -1,8 +1,8 @@
-package net.acptools.suite.generator.modules;
+package net.acptools.suite.generator.models.modules;
 
 import java.util.*;
 
-import net.acptools.suite.generator.components.ConfigurationException;
+import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.XmlUtils;
 
 import org.w3c.dom.Element;
