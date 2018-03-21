@@ -11,22 +11,38 @@ public class ConsoleIde implements ConsoleInterface {
 
     @Override
     public void print(String s) {
-        EditorFrame.instance.console.print(s);
+        if (EditorFrame.instance != null && EditorFrame.instance.console != null) {
+            EditorFrame.instance.console.print(s);
+        } else {
+            System.out.print(s);
+        }
     }
 
     @Override
     public void println(String s) {
-        EditorFrame.instance.console.println(s);
+        if (EditorFrame.instance != null && EditorFrame.instance.console != null) {
+            EditorFrame.instance.console.println(s);
+        } else {
+            System.out.println(s);
+        }
     }
 
     @Override
     public void err(String s) {
-        EditorFrame.instance.console.err(s);
+        if (EditorFrame.instance != null && EditorFrame.instance.console != null) {
+            EditorFrame.instance.console.err(s);
+        } else {
+            System.err.print(s);
+        }
     }
 
     @Override
     public void errln(String s) {
-        EditorFrame.instance.console.errln(s);
+        if (EditorFrame.instance != null && EditorFrame.instance.console != null) {
+            EditorFrame.instance.console.errln(s);
+        } else {
+            System.err.println(s);
+        }
     }
 
     @Override
