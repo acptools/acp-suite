@@ -200,6 +200,7 @@ public class ProjectProxy implements ComponentInterface {
 
     private void readConfiguration(Element xmlRoot) {
         createDefaultConfiguration();
+
         // Initialize project properties
         properties.put("EepromLayoutVersion", parentProject.getEepromLayoutVersion());
         properties.put("PlatformName", parentProject.getPlatformName());
@@ -207,7 +208,7 @@ public class ProjectProxy implements ComponentInterface {
 
         // Add all other components
         Map<String, ComponentProxy> componentsMap = getComponentsMap();
-        Map<String, Boolean> selectedComponents = new LinkedHashMap<>();
+
 
         Element groupsWrapper = XmlUtils.getChildElement(xmlRoot, "groups");
         for (Element xmlGroup : XmlUtils.getChildElements(groupsWrapper, "group")) {
@@ -220,21 +221,12 @@ public class ProjectProxy implements ComponentInterface {
                 ComponentInterface component = componentsMap.getOrDefault(componentName, null);
                 if (component != null) {
                     newGroupComponentsList.add(component);
-                    selectedComponents.put(componentName, true);
                 }
             }
             components.put(newGroup, newGroupComponentsList);
         }
 
-        List<ComponentInterface> newGroupComponentsList = new ArrayList<>();
-        for (Map.Entry<String, ComponentProxy> entry : componentsMap.entrySet()) {
-            if (!selectedComponents.containsKey(entry.getKey())) {
-                newGroupComponentsList.add(entry.getValue());
-            }
-        }
-        if (newGroupComponentsList.size() != 0) {
-            components.put(undefinedGroup, newGroupComponentsList);
-        }
+        assignRestComponents();
     }
 
     private void createDefaultConfiguration() {
@@ -245,6 +237,35 @@ public class ProjectProxy implements ComponentInterface {
         List<ComponentInterface> projectComponentGroupList = new ArrayList<ComponentInterface>(1);
         projectComponentGroupList.add(this);
         components.put(new Group("Project component group", true), projectComponentGroupList);
+    }
+
+    private void assignRestComponents() {
+        // Read all currenty assigned components
+        Map<String, Boolean> selectedComponents = new LinkedHashMap<>();
+        for (Map.Entry<Group, List<ComponentInterface>> entry : components.entrySet()) {
+            for (ComponentInterface componentInterface : entry.getValue()) {
+                selectedComponents.put(componentInterface.getName(), true);
+            }
+        }
+
+        // Load all components
+        Map<String, ComponentProxy> componentsMap = getComponentsMap();
+
+        // Add to undefined group all rest components
+        int size = componentsMap.size() - selectedComponents.size();
+
+        if (size > 0) {
+            // find and add rest component
+            List<ComponentInterface> newGroupComponentsList = new ArrayList<>(size);
+            for (Map.Entry<String, ComponentProxy> entry : componentsMap.entrySet()) {
+                if (!selectedComponents.containsKey(entry.getKey())) {
+                    newGroupComponentsList.add(entry.getValue());
+                }
+            }
+
+            // add to components model
+            components.put(undefinedGroup, newGroupComponentsList);
+        }
     }
 
     public static ProjectProxy loadFromFile(File xmlFile) {
@@ -265,6 +286,7 @@ public class ProjectProxy implements ComponentInterface {
                 result.readConfiguration(ideXmlRoot);
             } else {
                 result.createDefaultConfiguration();
+                result.assignRestComponents();
             }
             return result;
         } catch (Exception var6) {
