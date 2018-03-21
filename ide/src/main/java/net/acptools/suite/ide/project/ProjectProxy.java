@@ -18,6 +18,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 
 public class ProjectProxy implements ComponentInterface {
@@ -187,7 +188,8 @@ public class ProjectProxy implements ComponentInterface {
     @Override
     public Module getModuleInstance() {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("project-component.xml")).getFile());
+        URL filePath = Objects.requireNonNull(classLoader.getResource("project-component.xml"));
+        File file = new File(filePath.getFile());
         return ComponentType.loadFromFile(file);
     }
 
@@ -197,19 +199,11 @@ public class ProjectProxy implements ComponentInterface {
     // --------------------------------------------------------------------------------------
 
     private void readConfiguration(Element xmlRoot) {
+        createDefaultConfiguration();
         // Initialize project properties
-        properties = new HashMap<>();
         properties.put("EepromLayoutVersion", parentProject.getEepromLayoutVersion());
         properties.put("PlatformName", parentProject.getPlatformName());
         properties.put("WatchdogLevel", Integer.toString(parentProject.getWatchdogLevel()));
-
-        // Read components to groups
-        components = new LinkedHashMap<>();
-
-        // Insert project component group
-        List<ComponentInterface> projectComponentGroupList = new ArrayList<ComponentInterface>(1);
-        projectComponentGroupList.add(this);
-        components.put(new Group("Project component group", true), projectComponentGroupList);
 
         // Add all other components
         Map<String, ComponentProxy> componentsMap = getComponentsMap();
@@ -243,6 +237,16 @@ public class ProjectProxy implements ComponentInterface {
         }
     }
 
+    private void createDefaultConfiguration() {
+        properties = new HashMap<>();
+        components = new LinkedHashMap<>();
+
+        // Insert project component group
+        List<ComponentInterface> projectComponentGroupList = new ArrayList<ComponentInterface>(1);
+        projectComponentGroupList.add(this);
+        components.put(new Group("Project component group", true), projectComponentGroupList);
+    }
+
     public static ProjectProxy loadFromFile(File xmlFile) {
         Project parentProject = Project.loadFromFile(xmlFile);
 
@@ -260,7 +264,7 @@ public class ProjectProxy implements ComponentInterface {
             if (ideXmlRoot != null) {
                 result.readConfiguration(ideXmlRoot);
             } else {
-                // todo: urobit default konfiguraciu!
+                result.createDefaultConfiguration();
             }
             return result;
         } catch (Exception var6) {
@@ -290,7 +294,9 @@ public class ProjectProxy implements ComponentInterface {
             doc.appendChild(xmlRoot);
 
             Element xmlIdeRoot = writeIdeConfiguration(doc.createElement("ide"));
-            xmlRoot.appendChild(xmlIdeRoot);
+            if (xmlIdeRoot != null) {
+                xmlRoot.appendChild(xmlIdeRoot);
+            }
 
             // Save configuration to XML file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
