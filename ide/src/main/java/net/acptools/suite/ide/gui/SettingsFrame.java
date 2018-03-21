@@ -46,6 +46,8 @@ public class SettingsFrame extends SettingsFrameGenerated {
             IdeSettings.getInstance().setArduinoCli(arduinoCli.getText());
             IdeSettings.getInstance().setArduinoLibraryFolder(arduinoLibraryFolder.getText());
             IdeSettings.getInstance().setAcprogModulesFolder(acprogModulesFolder.getText());
+            IdeSettings.getInstance().saveSettingsToFile();
+            SettingsFrame.this.dispose();
         });
     }
 
