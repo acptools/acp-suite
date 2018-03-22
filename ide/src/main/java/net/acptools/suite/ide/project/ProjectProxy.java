@@ -300,7 +300,11 @@ public class ProjectProxy implements ComponentInterface {
 
     public boolean saveToFile(File xmlFile) {
         parentProject.setPlatformName(properties.get("PlatformName"));
-        parentProject.setWatchdogLevel(Integer.parseInt(properties.get("WatchdogLevel")));
+        try {
+            parentProject.setWatchdogLevel(Integer.parseInt(properties.get("WatchdogLevel")));
+        } catch (NumberFormatException e) {
+            
+        }
         parentProject.setEepromLayoutVersion(properties.get("EepromLayoutVersion"));
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
