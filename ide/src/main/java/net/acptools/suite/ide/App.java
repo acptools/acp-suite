@@ -53,12 +53,14 @@ public class App {
 
     public static void openProjectChooser() {
         JDialog frame = new OpenFrame();
+        frame.setLocationRelativeTo(null);
         frame.pack();
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 
     public static void openSettings() {
         JDialog frame = new SettingsFrame();
+        frame.setLocationRelativeTo(null);
         frame.pack();
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
