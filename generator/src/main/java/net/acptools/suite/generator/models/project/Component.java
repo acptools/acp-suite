@@ -1,13 +1,12 @@
 package net.acptools.suite.generator.models.project;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.XmlUtils;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Configuration of a component.
@@ -195,10 +194,12 @@ public class Component {
             return null;
         }
         for (Map.Entry<String, String> entry : getEvents().entrySet()) {
-            Element xmlEvent = doc.createElement("event");
-            xmlEvent.setAttribute("name", entry.getKey());
-            xmlEvent.setTextContent(entry.getValue());
-            xmlEvents.appendChild(xmlEvent);
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                Element xmlEvent = doc.createElement("event");
+                xmlEvent.setAttribute("name", entry.getKey());
+                xmlEvent.setTextContent(entry.getValue());
+                xmlEvents.appendChild(xmlEvent);
+            }
         }
         return xmlEvents;
     }
@@ -208,10 +209,12 @@ public class Component {
             return null;
         }
         for (Map.Entry<String, String> entry : getProperties().entrySet()) {
-            Element xmlProperty = doc.createElement("property");
-            xmlProperty.setAttribute("name", entry.getKey());
-            xmlProperty.setTextContent(entry.getValue());
-            xmlProperties.appendChild(xmlProperty);
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                Element xmlProperty = doc.createElement("property");
+                xmlProperty.setAttribute("name", entry.getKey());
+                xmlProperty.setTextContent(entry.getValue());
+                xmlProperties.appendChild(xmlProperty);
+            }
         }
         return xmlProperties;
     }
