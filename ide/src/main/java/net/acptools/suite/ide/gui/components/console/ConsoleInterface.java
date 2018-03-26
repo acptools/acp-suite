@@ -9,5 +9,7 @@ public interface ConsoleInterface {
 
     public void errln(String message);
 
+    public void exception(Throwable e);
+
     int runProccess(String proccess);
 }

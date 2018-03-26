@@ -69,20 +69,30 @@ public class ConsoleIdeComponent implements IdeComponent, ConsoleInterface {
         tp.setEditable(false);
     }
 
+    @Override
     public void print(String line) {
         appendToPane(textPane, line, Color.BLACK);
     }
 
+    @Override
     public void println(String line) {
         appendToPane(textPane, line + "\n", Color.BLACK);
     }
 
+    @Override
     public void err(String line) {
         appendToPane(textPane, line, Color.RED);
     }
 
+    @Override
     public void errln(String line) {
         appendToPane(textPane, line + "\n", Color.RED);
+    }
+
+    @Override
+    public void exception(Throwable e) {
+        errln(e.getMessage());
+        e.printStackTrace();
     }
 
     @Override

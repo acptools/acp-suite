@@ -226,8 +226,9 @@ public class IdeSettings {
         if (availableBoards == null) {
             availableBoards = new ArrayList<>();
             availableBoards.add("Arduino");
-            availableBoards.add("ArduinoUno");
             availableBoards.add("ArduinoMega");
+            availableBoards.add("ArduinoNano");
+            availableBoards.add("ArduinoUno");
         }
         return availableBoards;
     }

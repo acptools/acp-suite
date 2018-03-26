@@ -1,6 +1,7 @@
 package net.acptools.suite.generator;
 
 import net.acptools.suite.generator.platforms.ArduinoMegaPlatform;
+import net.acptools.suite.generator.platforms.ArduinoNanoPlatform;
 import net.acptools.suite.generator.platforms.ArduinoPlatform;
 import net.acptools.suite.generator.platforms.ArduinoUnoPlatform;
 
@@ -90,6 +91,16 @@ public abstract class Platform {
     public abstract int getNumberOfHardwareSerials();
 
     /**
+     * Return board name for cli automated compilation.
+     * ```
+     * --board package:arch:board[:parameters]
+     * ```
+     *
+     * @return package:arch:board[:parameters]
+     */
+    public abstract String getBoardCliName();
+
+    /**
      * Instantiates compilation platform with given name.
      *
      * @param platformName the name of platform.
@@ -109,7 +120,7 @@ public abstract class Platform {
             case "ArduinoUno":
                 return new ArduinoUnoPlatform();
             case "ArduinoNano":
-                return new ArduinoUnoPlatform();
+                return new ArduinoNanoPlatform();
         }
 
         return null;

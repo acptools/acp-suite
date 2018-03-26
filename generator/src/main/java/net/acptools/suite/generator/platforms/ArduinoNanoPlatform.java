@@ -16,4 +16,9 @@ public class ArduinoNanoPlatform extends ArduinoPlatform {
     public int getNumberOfInterrupts() {
         return 2;
     }
+
+    @Override
+    public String getBoardCliName() {
+        return "arduino:avr:nano";
+    }
 }

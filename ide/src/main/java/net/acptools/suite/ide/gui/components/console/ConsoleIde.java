@@ -46,6 +46,12 @@ public class ConsoleIde implements ConsoleInterface {
     }
 
     @Override
+    public void exception(Throwable e) {
+        errln(e.getMessage());
+        e.printStackTrace();
+    }
+
+    @Override
     public int runProccess(String proccess) {
         return EditorFrame.instance.console.runProccess(proccess);
     }

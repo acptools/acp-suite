@@ -396,4 +396,9 @@ public class ArduinoPlatform extends Platform {
     public int getNumberOfHardwareSerials() {
         return 1;
     }
+
+    @Override
+    public String getBoardCliName() {
+        return "arduino:avr:uno";
+    }
 }

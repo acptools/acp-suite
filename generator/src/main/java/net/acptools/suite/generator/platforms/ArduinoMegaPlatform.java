@@ -21,4 +21,9 @@ public class ArduinoMegaPlatform extends ArduinoPlatform {
     public int getNumberOfHardwareSerials() {
         return 4;
     }
+
+    @Override
+    public String getBoardCliName() {
+        return "arduino:avr:mega";
+    }
 }

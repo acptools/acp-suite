@@ -3,6 +3,7 @@ package net.acptools.suite.ide.models;
 import net.acptools.suite.generator.ACPCompiler;
 import net.acptools.suite.generator.CompilationException;
 import net.acptools.suite.generator.CompilationSettings;
+import net.acptools.suite.generator.Platform;
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.FileUtils;
 import net.acptools.suite.ide.IdeException;
@@ -132,7 +133,7 @@ public class IdeProject {
             compiler.compile(settings);
             return true;
         } catch (CompilationException e) {
-            console.errln(e.getMessage());
+            console.exception(e);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,7 +143,8 @@ public class IdeProject {
     public boolean verify(ConsoleInterface console) {
         String proccess = IdeSettings.getInstance().getArduinoCli();
         proccess += " --verify";
-        proccess += " --board " + "arduino:avr:uno";
+        Platform platform = Platform.loadPlatform(getProject().getPlatformName());
+        proccess += " --board " + platform.getBoardCliName();
         proccess += " --pref build.path=" + getProjectInoFile().getParentFile().getPath() + "\\build";
         //proccess += " --verbose";
         proccess += " " + getProjectInoFile();
