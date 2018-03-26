@@ -6,7 +6,7 @@
     <!-- TASKs -->
 
     <target name="clean">
-        <delete file="src/generated/"/>
+        <delete file="src/main/java/net/acptools/suite/ide/lang/cpp/generated"/>
     </target>
 
     <target name="init" depends="clean">
