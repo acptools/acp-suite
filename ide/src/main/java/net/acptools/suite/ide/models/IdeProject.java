@@ -161,7 +161,8 @@ public class IdeProject {
     public boolean upload(ConsoleInterface console, String serialPort) {
         String proccess = IdeSettings.getInstance().getArduinoCli();
         proccess += " --upload";
-        proccess += " --board " + "arduino:avr:uno";
+        Platform platform = Platform.loadPlatform(getProject().getPlatformName());
+        proccess += " --board " + platform.getBoardCliName();
         proccess += " --port " + serialPort;
         proccess += " --pref build.path=" + getProjectInoFile().getParentFile().getPath() + "\\build";
         //proccess += " --verbose";
