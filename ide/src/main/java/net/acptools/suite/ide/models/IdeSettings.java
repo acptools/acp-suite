@@ -1,4 +1,4 @@
-package net.acptools.suite.ide.configurations;
+package net.acptools.suite.ide.models;
 
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.XmlUtils;

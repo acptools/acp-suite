@@ -1,6 +1,6 @@
 package net.acptools.suite.ide.gui.components;
 
-import net.acptools.suite.ide.project.ComponentProxy;
+import net.acptools.suite.ide.models.ComponentProxy;
 import net.acptools.suite.ide.utils.event.EventType;
 
 import javax.swing.*;

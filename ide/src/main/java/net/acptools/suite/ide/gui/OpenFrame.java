@@ -2,8 +2,7 @@ package net.acptools.suite.ide.gui;
 
 import net.acptools.suite.ide.App;
 import net.acptools.suite.ide.IdeException;
-import net.acptools.suite.ide.configurations.IdeSettingsProject;
-import net.acptools.suite.ide.gui.generated.OpenFrameGenerated;
+import net.acptools.suite.ide.models.IdeSettingsProject;
 import net.acptools.suite.ide.gui.generated.OpenFrameGenerated;
 
 import javax.swing.*;

@@ -5,14 +5,10 @@ import java_cup.runtime.ComplexSymbolFactory;
 import net.acptools.suite.ide.lang.cpp.generated.Lexer;
 import net.acptools.suite.ide.lang.cpp.generated.Parser;
 import net.acptools.suite.ide.lang.cpp.util.SemanticAnalysis;
-import net.acptools.suite.ide.lang.cpp.generated.Parser;
-import net.acptools.suite.ide.lang.cpp.util.SemanticAnalysis;
 import org.fife.io.DocumentReader;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.parser.AbstractParser;
-import org.fife.ui.rsyntaxtextarea.parser.DefaultParseResult;
-import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
+import org.fife.ui.rsyntaxtextarea.parser.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -55,6 +51,9 @@ public class CppParser extends AbstractParser {
          * notice.getMessage(), notice.getLine(), offs, len)); } }
          */
 
+        DefaultParserNotice pn = new DefaultParserNotice(this, "Chýbajúci import #include \"BlinkTimer.h\"", 3, 0, 8);
+        pn.setLevel(ParserNotice.Level.ERROR);
+        this.result.addNotice(pn);
     }
 
     public void addPropertyChangeListener(String prop, PropertyChangeListener l) {
@@ -95,7 +94,10 @@ public class CppParser extends AbstractParser {
             System.err.println("Failed to compile: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+
+        addNotices(doc);
+
+        return this.result;
     }
 
     public void removePropertyChangeListener(String prop, PropertyChangeListener l) {

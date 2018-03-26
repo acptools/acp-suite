@@ -2,14 +2,13 @@ package net.acptools.suite.ide.gui.components;
 
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
 import bibliothek.gui.dock.common.SingleCDockable;
-import net.acptools.suite.ide.configurations.IdeProject;
+import net.acptools.suite.ide.models.IdeProject;
 import net.acptools.suite.ide.gui.EditorFrame;
 import net.acptools.suite.ide.gui.components.visualgroupview.GroupView;
-import net.acptools.suite.ide.project.ComponentInterface;
-import net.acptools.suite.ide.project.ProjectProxy;
+import net.acptools.suite.ide.models.ComponentInterface;
+import net.acptools.suite.ide.models.ProjectProxy;
 import net.acptools.suite.ide.utils.event.EventManager;
 import net.acptools.suite.ide.utils.event.EventType;
-import net.acptools.suite.ide.gui.components.visualgroupview.GroupView;
 
 import javax.swing.*;
 import java.awt.*;

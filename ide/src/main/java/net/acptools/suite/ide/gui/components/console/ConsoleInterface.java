@@ -1,4 +1,4 @@
-package net.acptools.suite.ide.gui.utils;
+package net.acptools.suite.ide.gui.components.console;
 
 public interface ConsoleInterface {
     public void print(String s);

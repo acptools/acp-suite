@@ -7,7 +7,7 @@ import net.acptools.suite.generator.models.modules.ComponentType;
 import net.acptools.suite.generator.models.modules.Module;
 import net.acptools.suite.ide.gui.EditorFrame;
 import net.acptools.suite.ide.gui.property.AstType;
-import net.acptools.suite.ide.project.ComponentInterface;
+import net.acptools.suite.ide.models.ComponentInterface;
 import net.acptools.suite.ide.utils.event.EventType;
 import sk.gbox.swing.propertiespanel.*;
 import sk.gbox.swing.propertiespanel.types.BooleanType;

@@ -43,36 +43,6 @@ public class EditorIdeComponent implements IdeComponent {
         });
     }
 
-    private class AcprogParser extends AbstractParser {
-        private DefaultParseResult result;
-
-        public AcprogParser() {
-            this.result = new DefaultParseResult(this);
-        }
-
-        @Override
-        public ParseResult parse(RSyntaxDocument doc, String s) {
-            this.result.clearNotices();
-
-            Element root = doc.getDefaultRootElement();
-            this.result.setParsedLines(0, root.getElementCount() - 1);
-            if (doc.getLength() != 0) {
-                for (int line = 0; line < root.getElementCount(); line++) {
-                    Token t = doc.getTokenListForLine(line);
-                    //EditorFrame.instance.console.println(t.toString());
-                    //EditorFrame.instance.console.errln("-----");
-
-                    DefaultParserNotice pn = new DefaultParserNotice(this, "Skuska", line, 592, 8);
-                    pn.setLevel(ParserNotice.Level.ERROR);
-                    this.result.addNotice(pn);
-                }
-            }
-            return this.result;
-        }
-    }
-
-    private Parser parser = new AcprogParser();
-
     private LanguageSupport ls = new CppLanguageSupport();
 
     private void InitializeComponents() {
@@ -104,38 +74,5 @@ public class EditorIdeComponent implements IdeComponent {
         }
     }
 
-    /*private AbstractSourceTree tree;
-
-    private void refreshSourceTree() {
-
-        if (tree!=null) {
-            tree.uninstall();
-        }
-
-        String language = textArea.getSyntaxEditingStyle();
-        if (SyntaxConstants.SYNTAX_STYLE_JAVA.equals(language)) {
-            tree = new JavaOutlineTree();
-        }
-        else if (SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT.equals(language)) {
-            tree = new JavaScriptOutlineTree();
-        }
-        else if (SyntaxConstants.SYNTAX_STYLE_XML.equals(language)) {
-            tree = new XmlOutlineTree();
-        }
-        else {
-            tree = null;
-        }
-
-        if (tree!=null) {
-            tree.listenTo(textArea);
-            treeSP.setViewportView(tree);
-        }
-        else {
-            JTree dummy = new JTree((TreeNode)null);
-            treeSP.setViewportView(dummy);
-        }
-        treeSP.revalidate();
-
-    }*/
 
 }

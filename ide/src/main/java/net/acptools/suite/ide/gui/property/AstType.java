@@ -90,7 +90,11 @@ public class AstType extends StringType {
             delegate = new CellEditor.EditorDelegate() {
                 public void setValue(Object value) {
                     editorTextField.setModel(new DefaultComboBoxModel<>(getAvailableFunctions()));
-                    editorTextField.setSelectedItem((value != null) ? value.toString() : "");
+                    String newValue = (value != null) ? value.toString() : "";
+                    if(newValue.isEmpty()) {
+                        newValue = null;
+                    }
+                    editorTextField.setSelectedItem(newValue);
                 }
 
                 public Object getCellEditorValue() {

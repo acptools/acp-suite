@@ -1,8 +1,8 @@
 package net.acptools.suite.ide;
 
-import net.acptools.suite.ide.configurations.IdeProject;
-import net.acptools.suite.ide.configurations.IdeSettings;
-import net.acptools.suite.ide.configurations.IdeSettingsProject;
+import net.acptools.suite.ide.models.IdeProject;
+import net.acptools.suite.ide.models.IdeSettings;
+import net.acptools.suite.ide.models.IdeSettingsProject;
 import net.acptools.suite.ide.gui.EditorFrame;
 import net.acptools.suite.ide.gui.OpenFrame;
 import net.acptools.suite.ide.gui.SettingsFrame;
@@ -74,6 +74,7 @@ public class App {
             frame.setLocationRelativeTo(null);
             SwingUtilities.invokeLater(() -> frame.setVisible(true));
         } catch (IdeException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "Acprog error", JOptionPane.ERROR_MESSAGE);
             App.openProjectChooser();
         }

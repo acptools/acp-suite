@@ -3,7 +3,7 @@ package net.acptools.suite.ide.gui.components;
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
 import bibliothek.gui.dock.common.SingleCDockable;
 import net.acptools.suite.generator.models.modules.Module;
-import net.acptools.suite.ide.configurations.IdeSettings;
+import net.acptools.suite.ide.models.IdeSettings;
 import net.acptools.suite.ide.gui.EditorFrame;
 import net.acptools.suite.ide.utils.ACPModules;
 import net.acptools.suite.ide.utils.event.EventType;

@@ -1,6 +1,6 @@
 package net.acptools.suite.ide.gui;
 
-import net.acptools.suite.ide.configurations.IdeSettings;
+import net.acptools.suite.ide.models.IdeSettings;
 import net.acptools.suite.ide.gui.generated.SettingsFrameGenerated;
 
 import javax.swing.*;

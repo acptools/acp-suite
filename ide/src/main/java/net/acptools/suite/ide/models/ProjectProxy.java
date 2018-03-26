@@ -1,4 +1,4 @@
-package net.acptools.suite.ide.project;
+package net.acptools.suite.ide.models;
 
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.models.modules.ComponentType;
@@ -289,8 +289,8 @@ public class ProjectProxy implements ComponentInterface {
                 result.assignRestComponents();
             }
             return result;
-        } catch (Exception var6) {
-            throw new ConfigurationException("Loading of project configuration failed.", var6);
+        } catch (Exception e) {
+            throw new ConfigurationException("Loading of project configuration failed.", e);
         }
     }
 
@@ -334,7 +334,7 @@ public class ProjectProxy implements ComponentInterface {
             transformer.transform(source, result);
             return true;
         } catch (Exception e) {
-            throw new ConfigurationException("Loading of project configuration failed.", e);
+            throw new ConfigurationException("Unknown error on saving project xml file.", e);
         }
     }
 

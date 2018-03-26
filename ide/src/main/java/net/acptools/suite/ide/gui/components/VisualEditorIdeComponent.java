@@ -5,8 +5,8 @@ import bibliothek.gui.dock.common.SingleCDockable;
 import net.acptools.suite.generator.models.modules.Module;
 import net.acptools.suite.generator.models.project.Component;
 import net.acptools.suite.ide.gui.EditorFrame;
-import net.acptools.suite.ide.project.ComponentProxy;
-import net.acptools.suite.ide.project.ProjectProxy;
+import net.acptools.suite.ide.models.ComponentProxy;
+import net.acptools.suite.ide.models.ProjectProxy;
 import net.acptools.suite.ide.utils.event.EventType;
 
 import javax.swing.*;

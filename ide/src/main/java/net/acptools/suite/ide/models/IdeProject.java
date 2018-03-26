@@ -1,4 +1,4 @@
-package net.acptools.suite.ide.configurations;
+package net.acptools.suite.ide.models;
 
 import net.acptools.suite.generator.ACPCompiler;
 import net.acptools.suite.generator.CompilationException;
@@ -6,9 +6,8 @@ import net.acptools.suite.generator.CompilationSettings;
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.FileUtils;
 import net.acptools.suite.ide.IdeException;
-import net.acptools.suite.ide.gui.utils.ConsoleIde;
-import net.acptools.suite.ide.gui.utils.ConsoleInterface;
-import net.acptools.suite.ide.project.ProjectProxy;
+import net.acptools.suite.ide.gui.components.console.ConsoleIde;
+import net.acptools.suite.ide.gui.components.console.ConsoleInterface;
 
 import java.io.*;
 
@@ -52,7 +51,7 @@ public class IdeProject {
         try {
             project = ProjectProxy.loadFromFile(getProjectXmlFile());
         } catch (ConfigurationException e) {
-            throw new IdeException(e.getMessage());
+            throw new IdeException(e.getMessage(), e);
         }
     }
 

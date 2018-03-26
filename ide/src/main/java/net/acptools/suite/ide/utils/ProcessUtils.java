@@ -1,4 +1,4 @@
-package net.acptools.suite.ide.gui.utils;
+package net.acptools.suite.ide.utils;
 
 import java.io.IOException;
 

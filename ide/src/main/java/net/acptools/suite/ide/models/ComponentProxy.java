@@ -1,4 +1,4 @@
-package net.acptools.suite.ide.project;
+package net.acptools.suite.ide.models;
 
 import net.acptools.suite.generator.models.modules.Module;
 import net.acptools.suite.generator.models.project.Component;

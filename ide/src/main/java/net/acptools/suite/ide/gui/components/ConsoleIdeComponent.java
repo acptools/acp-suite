@@ -3,8 +3,8 @@ package net.acptools.suite.ide.gui.components;
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
 import bibliothek.gui.dock.common.SingleCDockable;
 import net.acptools.suite.ide.gui.EditorFrame;
-import net.acptools.suite.ide.gui.utils.ConsoleInterface;
-import net.acptools.suite.ide.gui.utils.ProcessUtils;
+import net.acptools.suite.ide.gui.components.console.ConsoleInterface;
+import net.acptools.suite.ide.utils.ProcessUtils;
 
 import javax.swing.*;
 import javax.swing.text.*;

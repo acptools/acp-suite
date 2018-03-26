@@ -2,7 +2,7 @@ package net.acptools.suite.ide.utils;
 
 import net.acptools.suite.generator.models.modules.Module;
 import net.acptools.suite.generator.models.project.Component;
-import net.acptools.suite.ide.configurations.IdeSettings;
+import net.acptools.suite.ide.models.IdeSettings;
 
 import java.io.File;
 import java.util.ArrayList;

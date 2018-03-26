@@ -1,9 +1,9 @@
 package net.acptools.suite.ide.gui.components.visualgroupview;
 
 import net.acptools.suite.ide.gui.EditorFrame;
-import net.acptools.suite.ide.project.ComponentInterface;
-import net.acptools.suite.ide.project.ComponentProxy;
-import net.acptools.suite.ide.project.ProjectProxy;
+import net.acptools.suite.ide.models.ComponentInterface;
+import net.acptools.suite.ide.models.ComponentProxy;
+import net.acptools.suite.ide.models.ProjectProxy;
 import net.acptools.suite.ide.utils.event.EventType;
 
 import javax.swing.*;
