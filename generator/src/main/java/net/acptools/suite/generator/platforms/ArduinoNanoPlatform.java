@@ -4,7 +4,7 @@ public class ArduinoNanoPlatform extends ArduinoPlatform {
 
     @Override
     public int getNumberOfAnalogInputPins() {
-        return 6;
+        return 8;
     }
 
     @Override
