@@ -91,7 +91,7 @@ public class CppParser extends AbstractParser {
             Parser parser = new Parser(scanner, csf);
             ComplexSymbolFactory.ComplexSymbol s = (ComplexSymbolFactory.ComplexSymbol) parser.parse();
         } catch (Exception e) {
-            System.err.println("Failed to compile: " + e.getMessage());
+            System.err.println("Failed to compile source code, due to this error:");
             e.printStackTrace();
         }
 

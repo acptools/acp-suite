@@ -2,6 +2,7 @@ package net.acptools.suite.ide.lang.cpp.util;
 
 
 import net.acptools.suite.ide.lang.cpp.core.Expression;
+import net.acptools.suite.ide.lang.cpp.core.Function;
 import net.acptools.suite.ide.lang.cpp.core.Type;
 
 import java.util.ArrayList;
@@ -40,6 +41,15 @@ public class Util {
             }
         }
         return types;
+    }
+
+    public static Expression asExpression(Object o) {
+        if (o instanceof Expression) {
+            return (Expression) o;
+        } else if (o instanceof Function) {
+            return new Expression(((Function) o).getReturnType());
+        }
+        return new Expression("null");
     }
 
 }

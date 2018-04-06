@@ -4,6 +4,7 @@
  * Contributors:
  *      Jeanderson Barros Candido - http://jeandersonbc.github.io
  *      Thiago Ferreira Patricio - http://github.com/tferreirap
+ *      Patrik Pekarčík - https://github.com/ppatrik
  */
 package net.acptools.suite.ide.lang.cpp.generated;
 
@@ -28,24 +29,26 @@ import java.util.*;
 %{
 
   ComplexSymbolFactory symbolFactory;
-      public Lexer(java.io.Reader in, ComplexSymbolFactory sf){
-  	this(in);
-  	symbolFactory = sf;
-      }
+  public Lexer(java.io.Reader in, ComplexSymbolFactory sf){
+  	  this(in);
+      symbolFactory = sf;
+  }
 
-      private Symbol symbol(int sym) {
-        return symbolFactory.newSymbol("sym", sym, new Location(yyline+1,yycolumn+1,yychar), new Location(yyline+1,yycolumn+yylength(),yychar+yylength()));
-    }
-    private Symbol symbol(int sym, Object val) {
-        Location left = new Location(yyline+1,yycolumn+1,yychar);
-        Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
-        return symbolFactory.newSymbol("sym", sym, left, right,val);
-    }
-    private Symbol symbol(int sym, Object val,int buflength) {
-        Location left = new Location(yyline+1,yycolumn+yylength()-buflength,yychar+yylength()-buflength);
-        Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
-        return symbolFactory.newSymbol("sym", sym, left, right,val);
-    }
+  private Symbol symbol(int sym) {
+      return symbolFactory.newSymbol("sym", sym, new Location(yyline+1,yycolumn+1,yychar), new Location(yyline+1,yycolumn+yylength(),yychar+yylength()));
+  }
+
+  private Symbol symbol(int sym, Object val) {
+      Location left = new Location(yyline+1,yycolumn+1,yychar);
+      Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
+      return symbolFactory.newSymbol("sym", sym, left, right,val);
+  }
+
+  private Symbol symbol(int sym, Object val,int buflength) {
+      Location left = new Location(yyline+1,yycolumn+yylength()-buflength,yychar+yylength()-buflength);
+      Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
+      return symbolFactory.newSymbol("sym", sym, left, right,val);
+  }
 
   /**
    * Reports an error occured in a given line.
@@ -53,7 +56,7 @@ import java.util.*;
    * @param msg Additional information about the error
    */
   private void reportError(int line, String msg) {
-        System.err.println("Lexical error at line #" + line + ": " + msg);
+      System.err.println("Lexical error at line #" + line + ": " + msg);
       //throw new RuntimeException("Lexical error at line #" + line + ": " + msg);
   }
 
@@ -94,7 +97,7 @@ BlockComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 /* Identifier = [:jletter:][:jletterdigit:]* */
 
 /*-*
- * Aqui definiremos os padr�es de defini��o:
+ * Here we define definition patterns.
  */
 letter          = [A-Za-z]
 L               = [a-zA-Z_]
@@ -125,7 +128,9 @@ identifier      = {letter}({alphanumeric}|{other_id_char})*
     "using"                 { return symbol(sym.USING); }
     "this"                  { return symbol(sym.THIS); }
 
+    "byte"                  { return symbol(sym.BYTE, new String(yytext())); }
     "bool"                  { return symbol(sym.BOOL, new String(yytext())); }
+    "boolean"               { return symbol(sym.BOOL, new String(yytext())); }
     "break"                 { return symbol(sym.BREAK, new String(yytext())); }
     "auto"                  { return symbol(sym.AUTO, new String(yytext())); }
     "break"                 { return symbol(sym.BREAK, new String(yytext())); }
@@ -154,6 +159,8 @@ identifier      = {letter}({alphanumeric}|{other_id_char})*
     "operator"              { return symbol(sym.OPERATOR, new String(yytext())); }
     "new"                   { return symbol(sym.NEW, new String(yytext()) ); }
     "string"                { return symbol(sym.STRING, new String(yytext()) ); }
+    "String"                { return symbol(sym.STRING, new String(yytext()) ); }
+    "word"                  { return symbol(sym.WORD, new String(yytext()) ); }
 
     /* Access modifiers */
 
@@ -264,11 +271,13 @@ identifier      = {letter}({alphanumeric}|{other_id_char})*
     "..."                   { return symbol(sym.DOTS); }
 
      \"([^\\\"]|\\.)*\"     { return symbol(sym.STRING_LITERAL, new String(yytext())); }
+     \'([^\\\']|\\.)*\'     { return symbol(sym.STRING_LITERAL, new String(yytext())); }
      \<([^\\\"]|\\.)*\>     { return symbol(sym.INCLUDE_LITERAL, new String(yytext())); }
 
     {identifier}            { return symbol(sym.IDENTIFIER, new String(yytext())); }
 
-    {D}+{IS}?       { return symbol(sym.INTEGER, new String(yytext())); }
+    {D}+{IS}?               { return symbol(sym.INTEGER, new String(yytext())); }
+    -?([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)       { return symbol(sym.FLOATING, new String(yytext())); }
 
     {BlankSpace}            { /* skip it */ }
     {Comments}              { /* skip it */ }

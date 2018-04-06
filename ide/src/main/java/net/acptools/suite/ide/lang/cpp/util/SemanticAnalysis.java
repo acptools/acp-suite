@@ -36,7 +36,7 @@ public class SemanticAnalysis {
 
     private Stack<ScopedEntity> scopeStack;
 
-    private Map<String, Function> extimatedFunctions = new HashMap<>();
+    private Map<String, Function> estimatedFunctions = new HashMap<>();
 
     private Map<String, Variable> estimatedVariables = new HashMap<>();
 
@@ -51,14 +51,26 @@ public class SemanticAnalysis {
         Function f = new Function("ACP_TRACE", parameters);
         f.setReturnType(new Type("void"));
         f.setReturnedType(new Type("void"));
-        extimatedFunctions.put("ACP_TRACE", f);
+        estimatedFunctions.put(f.getName(), f);
 
         parameters = new ArrayList<>();
         parameters.add(new Variable("text", new Type("string")));
         f = new Function("F", parameters);
         f.setReturnType(new Type("string"));
         f.setReturnedType(new Type("string"));
-        extimatedFunctions.put("F", f);
+        estimatedFunctions.put(f.getName(), f);
+
+        parameters = new ArrayList<>();
+        parameters.add(new Variable("pin", new Type("int")));
+        f = new Function("analogRead", parameters);
+        f.setReturnType(new Type("double"));
+        f.setReturnedType(new Type("double"));
+        estimatedFunctions.put(f.getName(), f);
+
+        f = new Function("millis", new ArrayList<>());
+        f.setReturnType(new Type("long"));
+        f.setReturnedType(new Type("long"));
+        estimatedFunctions.put(f.getName(), f);
 
         estimatedVariables.put("led", new Variable("led", new Type("Led")));
     }
@@ -106,7 +118,7 @@ public class SemanticAnalysis {
 
     public void addVariable(Variable v) {
         if (checkVariableNameCurrentScope(v.getName()))
-            throw new SemanticException("Variable name already exists");
+            throw new SemanticException("Variable name \"" + v.getName() + "\" already exists");
 
         if (!scopeStack.isEmpty()) {
             scopeStack.peek().addVariable(v);
@@ -127,6 +139,10 @@ public class SemanticAnalysis {
         if (cProgram.getFunctions().get(name) != null)
             return cProgram.getFunctions().get(name);
 
+        if (estimatedFunctions.get(name) != null) {
+            return estimatedFunctions.get(name);
+        }
+
         for (int i = scopeStack.size() - 1; i >= 0; i--)
             if (scopeStack.get(i).getVariable().get(name) != null)
                 return scopeStack.get(i).getVariable().get(name);
@@ -143,16 +159,16 @@ public class SemanticAnalysis {
 
     public boolean checkVariableNameCurrentScope(String name) {
 
-        Set<String> variablesName;
+        Map<String, Variable> variablesMap = new HashMap<>();
         if (scopeStack.isEmpty()) {
-            variablesName = cProgram.getVariable().keySet();
+            variablesMap.putAll(cProgram.getVariable());
         } else {
-            variablesName = scopeStack.peek().getVariable().keySet();
+            variablesMap.putAll(scopeStack.peek().getVariable());
         }
 
-        variablesName.addAll(estimatedVariables.keySet());
+        variablesMap.putAll(estimatedVariables);
 
-        return variablesName.contains(name);
+        return variablesMap.containsKey(name);
     }
 
     public boolean checkVariableNameAllScopes(String name) {
@@ -302,13 +318,13 @@ public class SemanticAnalysis {
     public Function createMethodFunction(Expression object, String method) {
         Function f = new Function(object.getType() + "." + method);
         f.setReturnType(new Type("void"));
-        extimatedFunctions.put(f.getName(), f);
+        estimatedFunctions.put(f.getName(), f);
         return f;
     }
 
     public Map<String, Function> getFunctions() {
         Map<String, Function> functions = new HashMap<>();
-        functions.putAll(extimatedFunctions);
+        functions.putAll(estimatedFunctions);
         functions.putAll(cProgram.getFunctions());
         return functions;
     }

@@ -12,10 +12,8 @@ public class Variable extends Expression implements Parameter, Identifier {
         return getName();
     }
 
-    ;
-
     @Override
     public String toString() {
-        return getName();
+        return "Variable{ name: " + getName() + " }";
     }
 }

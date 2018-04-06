@@ -15,13 +15,13 @@
     </target>
 
     <target name="jflex" depends="init">
-        <java jar="${jflex.jar}" fork="true">
+        <java jar="${jflex.jar}" fork="true" failonerror="true">
             <arg line="${jflex.args}"/>
         </java>
     </target>
 
     <target name="cup">
-        <java jar="${cup.jar}" fork="true">
+        <java jar="${cup.jar}" fork="true" failonerror="true">
             <arg line="${cup.args}"/>
         </java>
     </target>

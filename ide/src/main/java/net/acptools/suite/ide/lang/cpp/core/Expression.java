@@ -1,5 +1,7 @@
 package net.acptools.suite.ide.lang.cpp.core;
 
+import java.util.List;
+
 public class Expression extends NamedEntity { // Not Really a named entity, but...
 
     private Type type;
@@ -42,6 +44,9 @@ public class Expression extends NamedEntity { // Not Really a named entity, but.
     public void setValue(Object o) {
         if (o instanceof Function) {
             setValue(new Expression(((Function) o).getReturnType()));
+        } else if (o instanceof List) {
+            Expression e = new Expression(new Type("LIST"));
+            setValue(e);
         } else {
             setValue((Expression) o);
         }
@@ -54,7 +59,6 @@ public class Expression extends NamedEntity { // Not Really a named entity, but.
     }
 
     public String toString() {
-//		return "{ Expression: " + getType() + " " + getValue() + "  }";
-        return getValue();
+        return "{ Expression: " + getType() + " " + getValue() + "  }";
     }
 }

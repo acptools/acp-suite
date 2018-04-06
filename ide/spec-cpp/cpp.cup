@@ -4,6 +4,7 @@
  * Contributors:
  *      Jeanderson Barros Candido - http://jeandersonbc.github.io
  *      Thiago Ferreira Patricio - http://github.com/tferreirap
+ *      Patrik Pekarčík - https://github.com/ppatrik
  */
 package net.acptools.suite.ide.lang.cpp.generated;
 
@@ -22,7 +23,6 @@ init with {: SemanticAnalysis.parser = this;              :};
 parser code {:
 
     public void report_error(String message, Object info) {
-
         StringBuffer m = new StringBuffer("Error");
         m.append(info);
         m.append(" : "+message);
@@ -32,30 +32,30 @@ parser code {:
     public void report_fatal_error(String message, Object info) {
         report_error(message, info);
     }
+
     public Parser(Lexer lex, ComplexSymbolFactory sf) {
     	super(lex,sf);
-        }
+    }
+
     public static void main(String[] args) {
-    String filePath = args[0];
-    try {
-    			System.out.println("Start compiling \"" + filePath + "\"...");
-    			ComplexSymbolFactory csf = new ComplexSymbolFactory();
-    			Lexer scanner = new Lexer(new BufferedReader(new FileReader(
-    					filePath)), csf);
+        String filePath = args[0];
+        try {
+    	    System.out.println("Start compiling \"" + filePath + "\"...");
+    	    ComplexSymbolFactory csf = new ComplexSymbolFactory();
+    	    Lexer scanner = new Lexer(new BufferedReader(new FileReader(filePath)), csf);
+    	    Parser parser = new Parser(scanner, csf);
+    		ComplexSymbolFactory.ComplexSymbol s = (ComplexSymbolFactory.ComplexSymbol)parser.parse();
 
-    			Parser parser = new Parser(scanner, csf);
-    			ComplexSymbolFactory.ComplexSymbol s = (ComplexSymbolFactory.ComplexSymbol)parser.parse();
+    		if ("$START".equals(s.getName()))
+    			System.out.println("> SUCCESSFULL COMPILATION: " + filePath);
+    		else
+    			System.out.println(s);
 
-    			if ("$START".equals(s.getName()))
-    				System.out.println("> SUCCESSFULL COMPILATION: " + filePath);
-    			else
-    				System.out.println(s);
-
-    		} catch (Exception e) {
-    			System.err.println("Failed to compile \"" + filePath + "\":");
-    			System.err.println(e.getMessage());
-    			e.printStackTrace();
-    		}
+    	} catch (Exception e) {
+    		System.err.println("Failed to compile \"" + filePath + "\":");
+    		System.err.println(e.getMessage());
+    		e.printStackTrace();
+    	}
     }
 :};
 
@@ -71,7 +71,7 @@ terminal RSHIFT, DIVOP, MODOP, DOTSTAR, ARROWSTAR, FRIEND, MINUSOP, PLUSOP, ALIG
 terminal BINNEG, TYPEID, TYPEDEF, THIS, NULLPTR, PRIVATE, PUBLIC;
 terminal PROTECTED, DECLTYPE, DEFAULT, INTEGER, STRING_LITERAL, STRING;
 
-terminal AUTO, BREAK, CASE, CHAR, CONTINUE, DO, DOUBLE, ELSE, FLOAT, FOR, GOTO, IF, INT, BOOL,
+terminal AUTO, BREAK, CASE, CHAR, CONTINUE, DO, DOUBLE, ELSE, FLOAT, FOR, GOTO, IF, INT, BOOL, BYTE, WORD, FLOATING,
 LONG, REGISTER, RETURN, SHORT, SIGNED, STATIC, SWITCH, UNSIGNED, VOID, WHILE, OPERATOR, NEW ;
 
 terminal INCLUDE, INCLUDE_LITERAL;
@@ -137,40 +137,53 @@ precedence left DIVOP;
  */
 start with translationUnit;
 
-translationUnit ::= declarationSeqOpt {: Logger.print("120 translationUnit"); :};
+translationUnit
+    ::= declarationSeqOpt               {: Logger.print("120 translationUnit (declarationSeqOpt)"); :}
+    ;
 
-declarationSeqOpt ::= declarationSeq | ;
+declarationSeqOpt
+    ::= declarationSeq                  {: Logger.print("121 declarationSeqOpt (declarationSeq)"); :}
+    |                                   {: Logger.print("121 declarationSeqOpt (empty)"); :}
+    ;
 
-declarationSeq ::= declaration
-    |   declarationSeq declaration
+declarationSeq
+    ::= declaration                     {: Logger.print("122 declarationSeq (declaration)"); :}
+    |  declarationSeq declaration       {: Logger.print("122 declarationSeq (declarationSeq declaration)"); :}
     ;
 
 /**
  * Declaration Types
  */
 
-declaration ::= blockDeclaration:b  {: Logger.print("132 "  + b); :}
-    |   functionDef:f               {: Logger.print("133 "  + f); :}
-    |   linkageSpec
-    |   emptyDeclaration
-    |   attributeDecl
-    |   includeDef
+declaration
+    ::= blockDeclaration:b              {: Logger.print("130 declaration (blockDeclaration:b) "  + b); :}
+    |   functionDef:f                   {: Logger.print("130 declaration (functionDef:f) "  + f); :}
+    |   linkageSpec                     {: Logger.print("130 declaration (linkageSpec)"); :}
+    |   emptyDeclaration                {: Logger.print("130 declaration (emptyDeclaration)"); :}
+    |   attributeDecl                   {: Logger.print("130 declaration (attributeDecl)" ); :}
+    |   includeDef:i                    {: Logger.print("130 declaration (includeDef) " + i); :}
     ;
 
 
+/**
+ * Include declaration
+ */
+
 includeDef
-    ::= INCLUDE includeFileLit:il {: Logger.print("Include " + il); :}
+    ::= INCLUDE includeFileLit:il       {: Logger.print("131 includeDef(INCLUDE includeFileLit:il) " + il); RESULT = il; :}
     ;
 
 includeFileLit
-    ::= INCLUDE_LITERAL:il          {: RESULT = il; :}
-    |   STRING_LITERAL:sl           {: RESULT = sl; :}
+    ::= INCLUDE_LITERAL:il              {: Logger.print("132 includeFileLit(INCLUDE_LITERAL:il) " + il); RESULT = il; :}
+    |   STRING_LITERAL:sl               {: Logger.print("132 includeFileLit(STRING_LITERAL:sl) " + sl); RESULT = sl; :}
     ;
 
 /**
  * Attribute Declaration
  */
-attributeDecl ::= attributeSpecSeq SEMICOLON;
+attributeDecl
+    ::= attributeSpecSeq SEMICOLON
+    ;
 
 /**
  * Linkage Specification
@@ -186,20 +199,27 @@ identifierOpt ::= IDENTIFIER | ;
  * Function Definition
  */
 
- functionDef ::= declSpec:d declarator:de {: Logger.print("pre-159 declSpec: " + d + " declarator: " + de); ((NamedEntity)de).setLocation(((java_cup.runtime.Symbol)CUP$Parser$stack.peek())); ((Function) de).setReturnType((Type) d); SemanticAnalysis.getInstance().addFunctionAndNewScope((Function) de); :}  functionBody:fb {: Logger.print("159 " + d + " " + fb);  SemanticAnalysis.getInstance().exitCurrentScope(); :};
+ functionDef
+    ::= declSpec:d declarator:de       {: Logger.print("pre-159 declSpec: " + d + " declarator: " + de); ((NamedEntity)de).setLocation(((java_cup.runtime.Symbol)CUP$Parser$stack.peek())); ((Function) de).setReturnType((Type) d); SemanticAnalysis.getInstance().addFunctionAndNewScope((Function) de); :}  functionBody:fb {: Logger.print("159 " + d + " " + fb);  SemanticAnalysis.getInstance().exitCurrentScope(); :}
+    ;
 
 
 
 
 
-declSpecSeqOpt ::= declSpecSeq | ;
+declSpecSeqOpt
+    ::= declSpecSeq
+    |
+    ;
 
-declSpecSeq ::= declSpec
+declSpecSeq
+    ::= declSpec
     |   declSpec declSpecSeq
     ;
 
 
-declSpec ::= storageClassSpec:s     {: Logger.print("168 storageClassSpec" + s); RESULT = s; :}
+declSpec
+    ::= storageClassSpec:s          {: Logger.print("168 storageClassSpec" + s); RESULT = s; :}
     |   typeSpec:t                  {: Logger.print("169 typeSpec " + t); RESULT = t; :}
     |   functionSpec:f              {: Logger.print("170 functionSpec" + f); RESULT = f; :}
     |   FRIEND                      {: RESULT = new Node("friend", "primario");  Logger.print("friend"); :}
@@ -245,19 +265,24 @@ nestedNameSpec ::= typeName COLON COLON
     | nestedNameSpec IDENTIFIER COLON COLON
     ;
 
-simpleTypeSpec ::= sepptrOpt nestedNameSpecOpt typeName
-    |   CHAR                {: RESULT = new Type("char");      Logger.print("char");:}
-    |   STRING              {: RESULT = new Type("string");    Logger.print("string");:}
-    |   BOOL                {: RESULT = new Type("bool");      Logger.print("bool");:}
-    |   SHORT               {: RESULT = new Type("short");     Logger.print("short");:}
-    |   INT                 {: RESULT = new Type("int");       Logger.print("int");:}
-    |   LONG                {: RESULT = new Type("long");      Logger.print("long");:}
-    |   SIGNED              {: RESULT = new Type("signed");    Logger.print("signed");:}
-    |   UNSIGNED            {: RESULT = new Type("unsigned");  Logger.print("unsigned");:}
-    |   FLOAT               {: RESULT = new Type("float");     Logger.print("float");:}
-    |   DOUBLE              {: RESULT = new Type("double");    Logger.print("double");:}
-    |   VOID                {: RESULT = new Type("void");      Logger.print("void");:}
-    |   AUTO                {: RESULT = new Type("auto");      Logger.print("auto");:}
+simpleTypeSpec
+    ::= sepptrOpt nestedNameSpecOpt typeName
+    |   UNSIGNED CHAR       {: RESULT = new Type("unsigned char"); :}
+    |   UNSIGNED INT        {: RESULT = new Type("unsigned int"); :}
+    |   UNSIGNED LONG       {: RESULT = new Type("unsigned long"); :}
+    |   STRING              {: RESULT = new Type("string"); :}
+    |   BOOL                {: RESULT = new Type("bool"); :}
+    |   BYTE                {: RESULT = new Type("byte"); :}
+    |   SHORT               {: RESULT = new Type("short"); :}
+    |   SIGNED              {: RESULT = new Type("signed"); :}
+    |   FLOAT               {: RESULT = new Type("float"); :}
+    |   DOUBLE              {: RESULT = new Type("double"); :}
+    |   CHAR                {: RESULT = new Type("char"); :}
+    |   INT                 {: RESULT = new Type("int"); :}
+    |   LONG                {: RESULT = new Type("long"); :}
+    |   VOID                {: RESULT = new Type("void"); :}
+    |   WORD                {: RESULT = new Type("word"); :}
+    |   AUTO                {: RESULT = new Type("auto"); :}
     |   declTypeSpec
     ;
 
@@ -277,19 +302,22 @@ memInitializerId ::= classOrDeclType
     | IDENTIFIER
     ;
 
-declarator ::= ptrDeclarator:p              {: Logger.print("244 ptrDeclarator " + p ); RESULT = p; :}
-    |   noPtrDeclarator parametersAndQualifiers trailingReturnType
+declarator
+    ::= ptrDeclarator:p                                                    {: Logger.print("244 declarator (ptrDeclarator:p) " + p ); RESULT = p; :}
+    |   noPtrDeclarator:p parametersAndQualifiers trailingReturnType       {: Logger.print("244 declarator (noPtrDeclarator:p parametersAndQualifiers trailingReturnType) " + p ); RESULT = p; :}
     ;
 
-ptrDeclarator ::= noPtrDeclarator:n         {: Logger.print("248 noPtrDeclarator " + n);  RESULT = n; :}
-    |   ptrOperator ptrDeclarator           {: Logger.print("249 ptrDeclarator "); :}
+ptrDeclarator
+    ::= noPtrDeclarator:n                   {: Logger.print("248 noPtrDeclarator " + n);  RESULT = n; :}
+    |   ptrOperator ptrDeclarator:p           {: Logger.print("249 ptrDeclarator " + p); RESULT = p; :}
     ;
 
-noPtrDeclarator ::= declaratorId:d                  {: Logger.print("252 declaratorId " + d ); RESULT = d; :}
-    |   noPtrDeclarator:n parametersAndQualifiers:p {: Logger.print("253 noptrDeclarator " + n + " paramsQualifiers " + p ); RESULT = new Function(n.toString(), (ArrayList<Parameter>) p, new SourcePosition(pleft, pright)); :}
-    |   noPtrDeclarator LSQRBRK constExpr RSQRBRK attributeSpecSeqOpt
-    |   noPtrDeclarator LSQRBRK RSQRBRK attributeSpecSeqOpt
-    |   LPAR ptrDeclarator RPAR
+noPtrDeclarator
+    ::= declaratorId:d                                                      {: Logger.print("252 declaratorId " + d ); RESULT = d; :}
+    |   noPtrDeclarator:n parametersAndQualifiers:p                         {: Logger.print("252 noptrDeclarator " + n + " paramsQualifiers " + p ); RESULT = new Function(n.toString(), (ArrayList<Parameter>) p, new SourcePosition(pleft, pright)); :}
+    |   noPtrDeclarator:n LSQRBRK constExpr:c RSQRBRK attributeSpecSeqOpt   {: Logger.print("252 noPtrDeclarator (noPtrDeclarator LSQRBRK constExpr RSQRBRK attributeSpecSeqOpt) " + n + " " + c); RESULT = n; :}
+    |   noPtrDeclarator:n LSQRBRK RSQRBRK attributeSpecSeqOpt               {: Logger.print("252 noPtrDeclarator (noPtrDeclarator LSQRBRK RSQRBRK attributeSpecSeqOpt) "); RESULT = n; :}
+    |   LPAR ptrDeclarator:pd RPAR                                          {: Logger.print("252 noPtrDeclarator (LPAR ptrDeclarator RPAR) " + pd); :}
     ;
 
 declaratorId ::= idExpr:idE                     {: Logger.print("259 idExpr " + idE ); RESULT = idE; :}
@@ -312,8 +340,9 @@ blockDeclaration ::= simpleDecl:s               {: Logger.print("276 simpleDecl 
 * simpleDecl ::= declSpecSeqOpt initDeclaratorListOpt SEMICOLON;
 */
 
-simpleDecl ::= declSpec:d SEMICOLON                  {: Logger.print("*!* 284 " + d); :}
-    |  declSpec:d initDeclaratorList:i SEMICOLON    {: Logger.print("*!* 285 " + d + " " + i); ((Variable) i).setType((Type) d); SemanticAnalysis.getInstance().addVariable((Variable) i); RESULT = i; :}
+simpleDecl
+    ::= declSpec:d SEMICOLON                         {: Logger.print("284 simpleDecl (declSpec:d SEMICOLON) " + d); :}
+    |   declSpec:d initDeclaratorList:i SEMICOLON    {: Logger.print("285 simpleDecl (declSpec:d initDeclaratorList:i SEMICOLON) " + d + " " + i); ((Variable) i).setType((Type) d); SemanticAnalysis.getInstance().addVariable((Variable) i); RESULT = i; :}
     ;
 
 
@@ -324,7 +353,7 @@ initDeclaratorList ::= initDeclarator:i                 {: Logger.print("291 " +
     ;
 
 initDeclarator ::= declarator:d     {: Logger.print("295 " + d); RESULT = new Variable(d.toString(), new Type("UNKNOWN")); :}
-    | declarator:d ASSIGNMENT initializeCls:i {:  Logger.print("226 TODO: CHECK VARIABLE NAME " + d + " " + i); Variable v = new Variable(d.toString(), new Type("UNKNOWN")); v.setValue(i); RESULT = v; :}
+    | declarator:d ASSIGNMENT initializeCls:i {: Variable v = new Variable(d.toString(), new Type("UNKNOWN")); v.setValue(i); RESULT = v; :}
     ;
 
 initializerOpt ::= initializer | ;
@@ -376,24 +405,33 @@ cvQualifierSeqOpt ::= cvQualifierSeq | ;
 /**
  * Expressions
  */
-expr ::= assignmentExpr:a               {: Logger.print("338 assignmentExpr " + a); RESULT = a; :}
+expr
+    ::= assignmentExpr:a               {: Logger.print("338 assignmentExpr " + a); RESULT = a; :}
     |   expr:e COMMA assignmentExpr:a   {: Logger.print("339 expr: " + e + " assignExpr: " + a); :}
     ;
 
-constExpr ::= conditionalExpr;
-
-conditionalExpr ::= logicalOrExpr:l         {: Logger.print("344 logicalOrExpr " + l); RESULT = l; :}
-    |   logicalOrExpr QUESTION expr COLON assignmentExpr {: Logger.print("345"); :}
+constExpr
+    ::= conditionalExpr:e                  {: Logger.print("412 constExpr (conditionalExpr) " + e); RESULT = e; :}
     ;
 
-assignmentExprOpt ::= assignmentExpr | ;
+conditionalExpr
+    ::= logicalOrExpr:l                                                  {: Logger.print("344 logicalOrExpr " + l); RESULT = l; :}
+    |   logicalOrExpr QUESTION assignmentExpr:e1 COLON assignmentExpr:e2 {: Logger.print("344 logicalOrExpr2 " + e1); RESULT = e1; :}
+    ;
 
-assignmentExpr ::= conditionalExpr:e                            {: Logger.print("351 conditionExpr " + e); RESULT = e; :}
+assignmentExprOpt
+    ::= assignmentExpr
+    |
+    ;
+
+assignmentExpr
+    ::= conditionalExpr:e                            {: Logger.print("351 conditionExpr " + e); RESULT = e; :}
     |   logicalOrExpr:u assignmentOperator:o initializeCls:e    {: Logger.print("352 logicalOrExpr: " + u + " assignOp: " + o + " initializeCls" + e); RESULT = e; :}
     ;
 
 
-assignmentOperator ::= ASSIGNMENT   {: RESULT = new Node("=", "primario");  Logger.print("=");:}
+assignmentOperator
+    ::= ASSIGNMENT   {: RESULT = new Node("=", "primario");  Logger.print("=");:}
     |   MULTASSIGN                  {: RESULT = new Node("*=", "primario"); Logger.print("*=");:}
     |   DIVASSIGN                   {: RESULT = new Node("/=", "primario"); Logger.print("/=");:}
     |   MODASSIGN                   {: RESULT = new Node("%=", "primario"); Logger.print("%=");:}
@@ -407,15 +445,18 @@ assignmentOperator ::= ASSIGNMENT   {: RESULT = new Node("=", "primario");  Logg
     ;
 
 
-initializeCls ::= assignmentExpr:ae    {: Logger.print("370 assignExpr " + ae); RESULT = ae; :}
-    |   bracedInitList
+initializeCls
+    ::= assignmentExpr:ae       {: Logger.print("370 initializeCls (assignmentExpr:ae) " + ae); RESULT = ae; :}
+    |   bracedInitList:bl       {: Logger.print("370 initializeCls (bracedInitList:bl) "); RESULT = bl; :}
     ;
 
-bracedInitList ::= LBRK initializeList commaOpt RBRK
-    |   LBRK RBRK
+bracedInitList
+    ::= LBRK initializeList:il commaOpt RBRK     {: Logger.print("453 bracedInitList (LBRK initializeList:il commaOpt RBRK) " + il); RESULT = il; :}
+    |   LBRK RBRK                                {: Logger.print("453 bracedInitList (LBRK RBRK) "); RESULT = Util.newList(); :}
     ;
 
-initializeList ::= initializeCls:i                  {: Logger.print("initializeCls " + i); RESULT = Util.newList((Expression) i); :}
+initializeList
+    ::= initializeCls:i                             {: Logger.print("458 initializeList (initializeCls:i) " + i); RESULT = Util.newList(Util.asExpression(i)); :}
     | initializeList:iList COMMA initializeCls:i    {: ((ArrayList<Expression>) iList).add((Expression)i); RESULT = iList; :}
     ;
 
@@ -498,20 +539,20 @@ unaryOp ::= STAR        {: RESULT = new Node("*", "primario"); Logger.print("*")
     |   BINNEG          {: RESULT = new Node("~", "primario"); Logger.print("~");:}
     ;
 
-postfixExpr ::= primaryExpr:p                            {: Logger.print("461 " + p); RESULT = p; :}
+postfixExpr ::= primaryExpr:p                              {: Logger.print("461 " + p); RESULT = p; :}
     |   postfixExpr:p LSQRBRK expr:e RSQRBRK               {: Logger.print("462 " + e); RESULT = p; :}
-    |   postfixExpr LSQRBRK bracedInitListOpt RSQRBRK
-    |   postfixExpr:p LPAR RPAR                          {: Logger.print("464 " + p); SemanticAnalysis.getInstance().isFunction(p); SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName()); RESULT = p; :}
-    |   postfixExpr:p LPAR initializeList:i RPAR         {: Logger.print("465 " + p + " " + i); SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName(), Util.convertToTypeArray((ArrayList<Expression>) i)); RESULT = new Expression(((Function)p).getReturnType()); :}
-    |   simpleTypeSpec LPAR exprListOpt RPAR
-    |   typenameSpec LPAR exprListOpt RPAR
-    |   simpleTypeSpec bracedInitList
-    |   typenameSpec bracedInitList
-    |   postfixExpr:p DOT idExpr:e                       {: Logger.print("646p1 " + p); RESULT = SemanticAnalysis.getInstance().createMethodFunction((Expression)p, (String)e); :}
-    |   postfixExpr:p ARROW idExpr:e                     {: Logger.print("646p1 " + p); RESULT = SemanticAnalysis.getInstance().createMethodFunction((Expression)p, (String)e); :}
-    |   postfixExpr DOT pseudoDestructorName
-    |   postfixExpr AUTOINCRM
-    |   postfixExpr AUTODECRM
+    |   postfixExpr:p LSQRBRK bracedInitListOpt RSQRBRK    {: Logger.print("463 " + p); RESULT = p; :}
+    |   postfixExpr:p LPAR RPAR                            {: Logger.print("464 " + p); SemanticAnalysis.getInstance().isFunction(p); SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName()); RESULT = p; :}
+    |   postfixExpr:p LPAR initializeList:i RPAR           {: Logger.print("465 " + p + " " + i); SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName(), Util.convertToTypeArray((ArrayList<Expression>) i)); RESULT = new Expression(((Function)p).getReturnType()); :}
+    |   simpleTypeSpec:st LPAR exprListOpt RPAR            {: Logger.print("466 " + st); Function e = new Function(((Type)st).getName()); e.setReturnType((Type)st); RESULT = e; :}
+    |   typenameSpec LPAR exprListOpt RPAR                 {: Logger.print("467 "); :}
+    |   simpleTypeSpec bracedInitList                      {: Logger.print("468 "); :}
+    |   typenameSpec bracedInitList                        {: Logger.print("469 "); :}
+    |   postfixExpr:p DOT idExpr:e                         {: Logger.print("646p1 " + p); RESULT = SemanticAnalysis.getInstance().createMethodFunction((Expression)p, (String)e); :}
+    |   postfixExpr:p ARROW idExpr:e                       {: Logger.print("646p1 " + p); RESULT = SemanticAnalysis.getInstance().createMethodFunction((Expression)p, (String)e); :}
+    |   postfixExpr:p DOT pseudoDestructorName             {: Logger.print("470 " + p); RESULT = p; :}
+    |   postfixExpr:p AUTOINCRM                            {: Logger.print("471 " + p); RESULT = p; :}
+    |   postfixExpr:p AUTODECRM                            {: Logger.print("472 " + p); RESULT = p; :}
     ;
 
 idExpr ::= unqualifiedId:u       {: Logger.print("471 unqualifiedID " + u ); RESULT = u; :}
@@ -537,9 +578,9 @@ conversionTypeId ::= typeSpecSeq conversionDeclaratorOpt;
 */
 
 
-primaryExpr ::= literal:l           {: RESULT = l;  Logger.print("499 literal" + l); :}
+primaryExpr ::= literal:l           {: RESULT = l;  Logger.print("499 literal " + l); :}
     |   THIS
-    |   LPAR expr:e RPAR            {: RESULT = e;  Logger.print("501 expression" + e); :}
+    |   LPAR expr:e RPAR            {: RESULT = e;  Logger.print("501 expression " + e); :}
     |   idExpr:i                   {: Logger.print("502 " + i); RESULT = SemanticAnalysis.getInstance().getIdentifier((String) i); :}
     ;
 
@@ -627,16 +668,24 @@ jumpStatement ::= BREAK SEMICOLON               {: Logger.print("566 BREAK ;"); 
  * Literals
  */
 
-literal ::= integerLiteral:i    {: Logger.print("575 " + i); RESULT = i; :}
-    |   characterLiteral:c      {: Logger.print("576 " + c); RESULT = c; :}
-    |   floatingLiteral
-    |   stringLiteral:s         {: Logger.print("578 " + s); RESULT = s; :}
-    |   booleanLiteral:b        {: Logger.print("579 " + b); RESULT = b; :}
+literal
+    ::= integerLiteral:i        {: Logger.print("575 literal (integerLiteral:i) " + i); RESULT = i; :}
+    |   characterLiteral:c      {: Logger.print("575 literal (characterLiteral:c)" + c); RESULT = c; :}
+    |   floatingLiteral:f       {: Logger.print("575 literal (floatingLiteral:f)" + f); RESULT = f; :}
+    |   stringLiteral:s         {: Logger.print("575 literal (stringLiteral:s)" + s); RESULT = s; :}
+    |   booleanLiteral:b        {: Logger.print("575 literal (booleanLiteral:b)" + b); RESULT = b; :}
     |   pointerLiteral
     |   userDefinedLiteral
     ;
 
-integerLiteral ::= INTEGER:i        {: Logger.print("584 " + i); RESULT = new Expression(new Type("int"), i.toString()); :} ;
+integerLiteral
+    ::= INTEGER:i        {: Logger.print("584 " + i); RESULT = new Expression(new Type("int"), i.toString()); :}
+    ;
+
+floatingLiteral
+    ::= FLOATING:f       {: Logger.print("585 " + f); RESULT = new Expression(new Type("float"), f.toString()); :}
+    |   INTEGER:i        {: Logger.print("585 " + i); RESULT = new Expression(new Type("float"), i.toString()); :}
+    ;
 
 booleanLiteral ::= TRUE:t           {: Logger.print("686 " + t); RESULT = new Expression(new Type("bool"), t.toString()); :}
     | FALSE:f                       {: Logger.print("687 " + f); RESULT = new Expression(new Type("bool"), f.toString()); :}
@@ -648,7 +697,10 @@ stringLiteral ::= STRING_LITERAL:s {: Logger.print("628 " + s); RESULT = new Exp
 
 bracedInitListOpt ::= bracedInitList | ;
 
-exprListOpt ::= initializeList | ;
+exprListOpt
+    ::= initializeList
+    |
+    ;
 
 typeIdListOpt ::= typeIdList | ;
 
@@ -753,9 +805,13 @@ className ::= IDENTIFIER;
 
 declTypeSpec ::= DECLTYPE LPAR expr RPAR;
 
-attributeSpecSeqOpt ::= attributeSpecSeq | ;
+attributeSpecSeqOpt
+    ::= attributeSpecSeq
+    |
+    ;
 
-attributeSpecSeq ::= attributeSpec
+attributeSpecSeq
+    ::= attributeSpec
     |   attributeSpecSeq attributeSpec
     ;
 
@@ -769,13 +825,22 @@ attributeList ::= attribute DOTS
     |   attributeList COMMA attributeOpt
     ;
 
-attributeOpt ::= attribute | ;
+attributeOpt
+    ::= attribute
+    |
+    ;
 
-attribute ::= attributeToken attributeArgClsOpt;
+attribute
+    ::= attributeToken attributeArgClsOpt
+    ;
 
-attributeArgClsOpt ::= attributeArgCls | ;
+attributeArgClsOpt
+    ::= attributeArgCls
+    |
+    ;
 
-attributeToken ::= IDENTIFIER
+attributeToken
+    ::= IDENTIFIER
     |   attributeScopedToken
     ;
 
