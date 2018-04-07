@@ -1,6 +1,7 @@
 package net.acptools.suite.ide.lang;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.parser.Parser;
 
 import javax.swing.*;
 

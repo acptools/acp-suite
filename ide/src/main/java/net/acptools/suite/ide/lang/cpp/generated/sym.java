@@ -5,8 +5,8 @@
 
 package net.acptools.suite.ide.lang.cpp.generated;
 
-/** CUP generated class containing symbol constants. */
-public class sym {
+/** CUP generated interface containing symbol constants. */
+public interface sym {
   /* terminals */
   public static final int SHORT = 100;
   public static final int SIGNED = 101;

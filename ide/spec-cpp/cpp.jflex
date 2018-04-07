@@ -14,6 +14,7 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
+import net.acptools.suite.ide.lang.cpp.core.SyntaxTreeNode;
 import java.util.*;
 
 %%
@@ -41,13 +42,25 @@ import java.util.*;
   private Symbol symbol(int sym, Object val) {
       Location left = new Location(yyline+1,yycolumn+1,yychar);
       Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
-      return symbolFactory.newSymbol("sym", sym, left, right,val);
+      Symbol s = symbolFactory.newSymbol("sym", sym, left, right, val);
+      if (val instanceof SyntaxTreeNode) {
+          SyntaxTreeNode node = (SyntaxTreeNode) val;
+          node.setLeft(left);
+          node.setRight(right);
+      }
+      return s;
   }
 
   private Symbol symbol(int sym, Object val,int buflength) {
       Location left = new Location(yyline+1,yycolumn+yylength()-buflength,yychar+yylength()-buflength);
       Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
-      return symbolFactory.newSymbol("sym", sym, left, right,val);
+      Symbol s = symbolFactory.newSymbol("sym", sym, left, right,val);
+      if (val instanceof SyntaxTreeNode) {
+          SyntaxTreeNode node = (SyntaxTreeNode) val;
+          node.setLeft(left);
+          node.setRight(right);
+      }
+      return s;
   }
 
   /**

@@ -1,7 +1,13 @@
 package net.acptools.suite.ide.lang.cpp.util;
 
+import java_cup.runtime.ComplexSymbolFactory;
+import java_cup.runtime.Symbol;
+import net.acptools.suite.ide.lang.cpp.CppParser;
 import net.acptools.suite.ide.lang.cpp.core.*;
 import net.acptools.suite.ide.lang.cpp.generated.Parser;
+import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
+import org.fife.ui.rsyntaxtextarea.parser.DefaultParserNotice;
+import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 
 import java.util.*;
 
@@ -9,20 +15,30 @@ public class SemanticAnalysis {
 
     public static Parser parser;
 
+    private static SemanticAnalysis sAnalysis;
+
+    private static CppParser _cppParser;
+
+    private static RSyntaxDocument _rSyntaxDocument;
+
+
     private static final Type[] BASIC_TYPES = new Type[]{
-            new Type("int"),
-            new Type("float"),
-            new Type("double"),
-            new Type("long"),
+            new Type("bool"),
+            new Type("byte"),
             new Type("char"),
+            new Type("unsigned char"),
+            new Type("double"),
+            new Type("float"),
+            new Type("int"),
+            new Type("unsigned int"),
+            new Type("long"),
+            new Type("unsigned long"),
             new Type("void"),
+            new Type("short"),
             new Type("string"),
-            new Type("bool")
+            new Type("word")
     };
 
-    public static ArrayList<String> variaveis = new ArrayList<String>();
-    public static ArrayList<String> valores = new ArrayList<String>();
-    private static SemanticAnalysis sAnalysis;
 
     public static SemanticAnalysis getInstance() {
         if (sAnalysis == null)
@@ -41,7 +57,7 @@ public class SemanticAnalysis {
     private Map<String, Variable> estimatedVariables = new HashMap<>();
 
     private SemanticAnalysis() {
-        scopeStack = new Stack<ScopedEntity>();
+        scopeStack = new Stack<>();
         cProgram = new Program();
 
         cProgram.addVariable(new Variable("led", new Type("Led")));
@@ -73,6 +89,11 @@ public class SemanticAnalysis {
         estimatedFunctions.put(f.getName(), f);
 
         estimatedVariables.put("led", new Variable("led", new Type("Led")));
+    }
+
+    public static void setParser(CppParser cppParser, RSyntaxDocument rSyntaxDocument) {
+        _cppParser = cppParser;
+        _rSyntaxDocument = rSyntaxDocument;
     }
 
     // Operations ...
@@ -152,9 +173,23 @@ public class SemanticAnalysis {
 
     // Check Operations
 
-    public void isFunction(Object o) {
-        if (!(o instanceof Function))
-            throw new SemanticException("Sorry, but " + o.toString() + " is not a function");
+    public boolean isFunction(Object o, ComplexSymbolFactory.ComplexSymbol ps) {
+        Type[] types = new Type[0];
+        return isFunction(o, types, ps);
+    }
+
+    public boolean isFunction(Object o, Type[] types, ComplexSymbolFactory.ComplexSymbol ps) {
+        if (o instanceof Function) {
+            return true;
+        }
+        if (o instanceof String) {
+            // TODO: vytvorit funkciu
+            return true;
+        }
+        DefaultParserNotice pn = new DefaultParserNotice(_cppParser, "SemanticException(\"Sorry, but \" + o.toString() + \"(" + types + ") is not a function", ps.xleft.getLine());
+        pn.setLevel(ParserNotice.Level.ERROR);
+        _cppParser.addNotice(pn);
+        return false;
     }
 
     public boolean checkVariableNameCurrentScope(String name) {
@@ -198,18 +233,19 @@ public class SemanticAnalysis {
         return false;
     }
 
-    public void checkFunctionCallException(String functionName) {
-        if (!checkFunctionCall(functionName)) {
-            // TODO: vytvorit funkciu
-            throw new SemanticException("Calling function not declared: " + functionName + "()");
-        }
+    public boolean checkFunctionCallException(String functionName, ComplexSymbolFactory.ComplexSymbol ps) {
+        Type[] types = new Type[0];
+        return checkFunctionCallException(functionName, types, ps);
     }
 
-    public void checkFunctionCallException(String functionName, Type[] types) {
+    public boolean checkFunctionCallException(String functionName, Type[] types, ComplexSymbolFactory.ComplexSymbol ps) {
         if (!checkFunctionCall(functionName, types)) {
-            // TODO: warning na pravdepodobnu chybu!
-            //throw new SemanticException("Calling function not declared: " + functionName + " " + Arrays.toString(types));
+            DefaultParserNotice pn = new DefaultParserNotice(_cppParser, "Calling function not declared: " + functionName + "(" + Arrays.toString(types) + ")", ps.xleft.getLine() - 1);
+            pn.setLevel(ParserNotice.Level.ERROR);
+            _cppParser.addNotice(pn);
+            return false;
         }
+        return true;
     }
 
     public boolean checkFunctionName(String functionName) {
@@ -218,12 +254,13 @@ public class SemanticAnalysis {
     }
 
     public boolean checkFunctionCall(String functionName) {
-        Function f = getFunctions().get(functionName);
-        return f != null && f.getParameterTypes().length == 0;
+        Type[] types = new Type[0];
+        return checkFunctionCall(functionName, types);
     }
 
     public boolean checkFunctionCall(String functionName, Type[] types) {
-        Function f = getFunctions().get(functionName);
+        return true;
+        /*Function f = getFunctions().get(functionName);
         if (f != null && f.getParameterTypes().length == types.length) {
             for (int i = 0; i < types.length; i++) {
                 if (!(types[i].getName().equals(f.getParameterTypes()[i].getName())))
@@ -231,7 +268,7 @@ public class SemanticAnalysis {
             }
             return true;
         }
-        return false;
+        return false;*/
     }
 
     public void checkReturnedType(Object e) {
@@ -335,5 +372,22 @@ public class SemanticAnalysis {
 
     public static void reset() {
         sAnalysis = null;
+    }
+
+    private Map<String, Include> includes = new HashMap<>();
+
+    public Include addInclude(String includedFile) {
+        includedFile = includedFile.substring(1, includedFile.length() - 1);
+        Include include = new Include(includedFile);
+        includes.put(include.getFileName(), include);
+        return include;
+    }
+
+    public Map<String, Include> getIncludes() {
+        return includes;
+    }
+
+    public boolean hasInclude(String fileName) {
+        return getIncludes().containsKey(fileName);
     }
 }

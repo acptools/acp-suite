@@ -3,6 +3,7 @@ package net.acptools.suite.ide.lang.cpp;
 import net.acptools.suite.ide.lang.AbstractLanguageSupport;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.parser.Parser;
 
 import javax.swing.*;
 
@@ -75,6 +76,5 @@ public class CppLanguageSupport extends AbstractLanguageSupport {
         uninstallImpl(textArea);
         textArea.setToolTipSupplier(null);
     }
-
 
 }

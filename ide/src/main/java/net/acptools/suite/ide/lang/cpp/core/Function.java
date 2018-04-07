@@ -13,7 +13,6 @@ public class Function extends ScopedEntity implements Identifier {
     private Type returnType = new Type("void"); // Default Return Type
     private ArrayList<Parameter> functionParameter;
     private Type returnedType = new Type("void"); // Default Return Type
-    private SourcePosition position;
 
 //	public Function(String name, Type returnType, ArrayList<Variable> parameters) {
 //		super(name);
@@ -42,12 +41,6 @@ public class Function extends ScopedEntity implements Identifier {
         }
     }
 
-    public Function(String name, ArrayList<Parameter> parameters, SourcePosition position) {
-        this(name, parameters);
-        setPosition(position);
-    }
-
-
     public Function(String name) {
         this(name, null);
     }
@@ -71,17 +64,9 @@ public class Function extends ScopedEntity implements Identifier {
         this.returnType = type;
     }
 
-    public void setPosition(SourcePosition position) {
-        this.position = position;
-    }
-
-    public SourcePosition getPosition() {
-        return this.position;
-    }
-
     @Override
     public String toString() {
-        return "{ Function: " + getName() + " " + getReturnType() + " " + functionParameter + ", " + position + " }";
+        return "{ Function: " + getName() + " " + getReturnType() + " " + functionParameter + ", " + getLeft() + " " + getRight() + " }";
     }
 
 

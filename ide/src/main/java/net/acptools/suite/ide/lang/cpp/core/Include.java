@@ -2,7 +2,7 @@ package net.acptools.suite.ide.lang.cpp.core;
 
 import java_cup.runtime.Symbol;
 
-public class Include {
+public class Include extends SyntaxTreeNode {
     private String fileName;
 
     private Location location;

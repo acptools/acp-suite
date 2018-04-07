@@ -1,7 +1,11 @@
 package net.acptools.suite.ide.lang.cpp;
 
 import net.acptools.suite.ide.lang.LanguageSupport;
+import net.acptools.suite.ide.lang.cpp.core.Function;
+import net.acptools.suite.ide.lang.cpp.core.Type;
+import net.acptools.suite.ide.lang.cpp.core.Variable;
 import net.acptools.suite.ide.lang.cpp.util.Logger;
+import net.acptools.suite.ide.lang.cpp.util.SemanticAnalysis;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -44,6 +48,15 @@ public class CppParserTest {
         Logger.enableLogger();
         textArea.setText(readFile("test01.ino"));
         textArea.forceReparsing(parser);
+
+        Function fun = SemanticAnalysis.getInstance().getFunctions().get("messangerEvent");
+        assert fun != null;
+
+        Type[] variables = fun.getParameterTypes();
+
+        assert "const char*".equals(variables[0].getName());
+        assert "int".equals(variables[1].getName());
+        assert "long".equals(variables[2].getName());
 
 
     }

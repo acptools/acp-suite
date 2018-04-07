@@ -6,12 +6,9 @@ import java_cup.runtime.Symbol;
 /**
  * Entity that has a name
  */
-public class NamedEntity {
+public class NamedEntity extends SyntaxTreeNode {
 
     private String name;
-
-    private Location location;
-
 
     public NamedEntity(String name) {
         this.name = name;
@@ -23,10 +20,6 @@ public class NamedEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setLocation(Symbol symbol) {
-        this.location = new Location(symbol);
     }
 
 }

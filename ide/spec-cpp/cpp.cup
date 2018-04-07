@@ -170,7 +170,7 @@ declaration
  */
 
 includeDef
-    ::= INCLUDE includeFileLit:il       {: Logger.print("131 includeDef(INCLUDE includeFileLit:il) " + il); RESULT = il; :}
+    ::= INCLUDE includeFileLit:il       {: Logger.print("131 includeDef(INCLUDE includeFileLit:il) " + il); SemanticAnalysis.getInstance().addInclude(il.toString()); RESULT = il; :}
     ;
 
 includeFileLit
@@ -200,7 +200,7 @@ identifierOpt ::= IDENTIFIER | ;
  */
 
  functionDef
-    ::= declSpec:d declarator:de       {: Logger.print("pre-159 declSpec: " + d + " declarator: " + de); ((NamedEntity)de).setLocation(((java_cup.runtime.Symbol)CUP$Parser$stack.peek())); ((Function) de).setReturnType((Type) d); SemanticAnalysis.getInstance().addFunctionAndNewScope((Function) de); :}  functionBody:fb {: Logger.print("159 " + d + " " + fb);  SemanticAnalysis.getInstance().exitCurrentScope(); :}
+    ::= declSpec:d declarator:de       {: Logger.print("pre-159 declSpec: " + d + " declarator: " + de); ((Function) de).setReturnType((Type) d); SemanticAnalysis.getInstance().addFunctionAndNewScope((Function) de); :}  functionBody:fb {: Logger.print("159 " + d + " " + fb);  SemanticAnalysis.getInstance().exitCurrentScope(); :}
     ;
 
 
@@ -250,10 +250,11 @@ enumName ::= IDENTIFIER;
 typedefName ::= IDENTIFIER;
 
 trailingTypeSpec
-    ::= simpleTypeSpec:s {: Logger.print("198 simpleTypeSpec " + s); RESULT = s; :}
+    ::= simpleTypeSpec:s {: Logger.print("198 trailingTypeSpec (simpleTypeSpec:s) " + s); RESULT = s; :}
     |   elaboratedTypeSpec
     |   typenameSpec
-    |   cvQualifier trailingTypeSpec
+    |   cvQualifier:c trailingTypeSpec:s {: Logger.print("198 trailingTypeSpec (cvQualifier:c trailingTypeSpec:s) " + c + " " + s); RESULT = new Type(((Type)c).getName() + " " + ((Type)s).getName()); :}
+    |   cvQualifier:c trailingTypeSpec:s STAR {: Logger.print("198 trailingTypeSpec (cvQualifier:c trailingTypeSpec:s STAR) " + c + " " + s); RESULT = new Type(((Type)c).getName() + " " + ((Type)s).getName() + "*"); :}
     ;
 
 sepptrOpt ::= SEPPTR | ;
@@ -308,13 +309,13 @@ declarator
     ;
 
 ptrDeclarator
-    ::= noPtrDeclarator:n                   {: Logger.print("248 noPtrDeclarator " + n);  RESULT = n; :}
-    |   ptrOperator ptrDeclarator:p           {: Logger.print("249 ptrDeclarator " + p); RESULT = p; :}
+    ::= noPtrDeclarator:n                       {: Logger.print("248 noPtrDeclarator " + n);  RESULT = n; :}
+    |   ptrOperator:o ptrDeclarator:p           {: Logger.print("249 ptrDeclarator " + p + " " + o); RESULT = p; :}
     ;
 
 noPtrDeclarator
     ::= declaratorId:d                                                      {: Logger.print("252 declaratorId " + d ); RESULT = d; :}
-    |   noPtrDeclarator:n parametersAndQualifiers:p                         {: Logger.print("252 noptrDeclarator " + n + " paramsQualifiers " + p ); RESULT = new Function(n.toString(), (ArrayList<Parameter>) p, new SourcePosition(pleft, pright)); :}
+    |   noPtrDeclarator:n parametersAndQualifiers:p                         {: Logger.print("252 noptrDeclarator " + n + " paramsQualifiers " + p ); RESULT = new Function(n.toString(), (ArrayList<Parameter>) p); :}
     |   noPtrDeclarator:n LSQRBRK constExpr:c RSQRBRK attributeSpecSeqOpt   {: Logger.print("252 noPtrDeclarator (noPtrDeclarator LSQRBRK constExpr RSQRBRK attributeSpecSeqOpt) " + n + " " + c); RESULT = n; :}
     |   noPtrDeclarator:n LSQRBRK RSQRBRK attributeSpecSeqOpt               {: Logger.print("252 noPtrDeclarator (noPtrDeclarator LSQRBRK RSQRBRK attributeSpecSeqOpt) "); RESULT = n; :}
     |   LPAR ptrDeclarator:pd RPAR                                          {: Logger.print("252 noPtrDeclarator (LPAR ptrDeclarator RPAR) " + pd); :}
@@ -400,7 +401,10 @@ paramDeclaration ::= declSpec:d declarator:de  {: Logger.print("323 " + d + " " 
     |   declSpecSeq abstractDeclaratorOpt ASSIGNMENT initializeCls
     ;
 
-cvQualifierSeqOpt ::= cvQualifierSeq | ;
+cvQualifierSeqOpt
+    ::= cvQualifierSeq
+    |
+    ;
 
 /**
  * Expressions
@@ -542,8 +546,8 @@ unaryOp ::= STAR        {: RESULT = new Node("*", "primario"); Logger.print("*")
 postfixExpr ::= primaryExpr:p                              {: Logger.print("461 " + p); RESULT = p; :}
     |   postfixExpr:p LSQRBRK expr:e RSQRBRK               {: Logger.print("462 " + e); RESULT = p; :}
     |   postfixExpr:p LSQRBRK bracedInitListOpt RSQRBRK    {: Logger.print("463 " + p); RESULT = p; :}
-    |   postfixExpr:p LPAR RPAR                            {: Logger.print("464 " + p); SemanticAnalysis.getInstance().isFunction(p); SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName()); RESULT = p; :}
-    |   postfixExpr:p LPAR initializeList:i RPAR           {: Logger.print("465 " + p + " " + i); SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName(), Util.convertToTypeArray((ArrayList<Expression>) i)); RESULT = new Expression(((Function)p).getReturnType()); :}
+    |   postfixExpr:p LPAR RPAR                            {: Logger.print("464 " + p); ComplexSymbolFactory.ComplexSymbol ps = (ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top); if(SemanticAnalysis.getInstance().isFunction(p, ps) && SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName(), ps)) { RESULT = new Expression(((Function)p).getReturnType()); } :}
+    |   postfixExpr:p LPAR initializeList:i RPAR           {: Logger.print("465 " + p + " " + i); ComplexSymbolFactory.ComplexSymbol ps = (ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top); Type[] types = Util.convertToTypeArray((ArrayList<Expression>) i); if(SemanticAnalysis.getInstance().isFunction(p, types, ps) && SemanticAnalysis.getInstance().checkFunctionCallException(((Function) p).getName(), types, ps)) { RESULT = new Expression(((Function)p).getReturnType()); } :}
     |   simpleTypeSpec:st LPAR exprListOpt RPAR            {: Logger.print("466 " + st); Function e = new Function(((Type)st).getName()); e.setReturnType((Type)st); RESULT = e; :}
     |   typenameSpec LPAR exprListOpt RPAR                 {: Logger.print("467 "); :}
     |   simpleTypeSpec bracedInitList                      {: Logger.print("468 "); :}
@@ -704,23 +708,38 @@ exprListOpt
 
 typeIdListOpt ::= typeIdList | ;
 
-typeIdList ::= typeId dotsOpt
+typeIdList
+    ::= typeId dotsOpt
     |   typeIdList COMMA typeId dotsOpt
     ;
 
-refQualifierOpt ::= refQualifier | ;
-
-refQualifier ::= SINGLEAND | DOUBLEAND;
-
-cvQualifierSeq ::=  cvQualifier
-    |   cvQualifier cvQualifierSeq
+refQualifierOpt
+    ::= refQualifier
+    |
     ;
 
-cvQualifier ::= CONST | VOLATILE;
+refQualifier
+    ::= SINGLEAND
+    |   DOUBLEAND
+    ;
 
-trailingReturnType ::= ARROW trailingTypeSpecSeq abstractDeclaratorOpt;
+cvQualifierSeq
+    ::=  cvQualifier:s                          {: RESULT = s; :}
+    |    cvQualifier:a cvQualifierSeq:b         {: RESULT = new Type(((Type)a).getName() + " " + ((Type)b).getName()); :}
+    ;
 
-trailingTypeSpecSeq ::= trailingTypeSpec attributeSpecSeqOpt
+cvQualifier
+    ::= CONST              {: Logger.print("724 cvQualifier (CONST)"); RESULT = new Type("const"); :}
+    |   VOLATILE           {: Logger.print("724 cvQualifier (VOLATILE)"); RESULT = new Type("volatile"); :}
+    |   STATIC             {: Logger.print("724 cvQualifier (STATIC)"); RESULT = new Type("static"); :}
+    ;
+
+trailingReturnType
+    ::= ARROW trailingTypeSpecSeq abstractDeclaratorOpt
+    ;
+
+trailingTypeSpecSeq
+    ::= trailingTypeSpec attributeSpecSeqOpt
     |   trailingTypeSpec trailingTypeSpecSeq
     ;
 
@@ -731,7 +750,8 @@ ptrAbstractDeclarator ::= noPtrAbstractDeclarator
 
 ptrAbstractDeclaratorOpt ::= ptrAbstractDeclarator | ;
 
-ptrOperator ::= STAR attributeSpecSeqOpt cvQualifierSeqOpt
+ptrOperator
+    ::= STAR attributeSpecSeqOpt:a cvQualifierSeqOpt:c    {: Logger.print("752 ptrOperator (STAR attributeSpecSeqOpt cvQualifierSeqOpt) " + a + " " + c); RESULT = "*"; :}
     |   SINGLEAND attributeSpecSeqOpt
     |   DOUBLEAND attributeSpecSeqOpt
     |   SEPPTR nestedNameSpec SINGLEAND attributeSpecSeqOpt cvQualifierSeqOpt
