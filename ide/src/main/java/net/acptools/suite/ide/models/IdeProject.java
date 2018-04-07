@@ -37,11 +37,11 @@ public class IdeProject {
     }
 
     private File getProjectXmlFile() {
-        return new File(projectFolder.getPath() + "\\" + projectFolder.getName() + ".xml");
+        return new File(getProjectPath() + "\\" + getName() + ".xml");
     }
 
     private File getProjectInoFile() {
-        return new File(projectFolder.getPath() + "\\" + projectFolder.getName() + ".ino");
+        return new File(getProjectPath() + "\\" + getName() + ".ino");
     }
 
     private String getLibraryName() {
@@ -175,5 +175,13 @@ public class IdeProject {
 
         console.errln("Chyba, skontrolujte konzolu pre viac informácií.");
         return false;
+    }
+
+    public String getProjectPath() {
+        return  projectFolder.getPath();
+    }
+
+    public String getName() {
+        return projectFolder.getName();
     }
 }

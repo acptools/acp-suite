@@ -26,8 +26,10 @@ import javax.swing.text.Element;
 public class EditorIdeComponent implements IdeComponent {
     private final EditorFrame editorFrame;
 
-    protected RSyntaxTextArea textArea;
-    protected RTextScrollPane sp;
+    protected RSyntaxTextArea textArea = null;
+    protected RTextScrollPane sp = null;
+    protected Parser parser = null;
+    protected CppLanguageSupport ls = new CppLanguageSupport();
 
     public EditorIdeComponent(EditorFrame editorFrame) {
         this.editorFrame = editorFrame;
@@ -35,6 +37,14 @@ public class EditorIdeComponent implements IdeComponent {
 
         textArea.setText(editorFrame.getIdeProject().getSourceString());
 
+        this.editorFrame.getEventManager().registerObserver(EventType.COMPONENT_UPDATED, new Observer() {
+            @Override
+            public void onEvent(EventType eventType, Object o) {
+                if (textArea != null && parser != null) {
+                    textArea.forceReparsing(parser);
+                }
+            }
+        });
         this.editorFrame.getEventManager().registerObserver(EventType.PROJECT_PRE_SAVE, new Observer() {
             @Override
             public void onEvent(EventType eventType, Object o) {
@@ -43,13 +53,13 @@ public class EditorIdeComponent implements IdeComponent {
         });
     }
 
-    private LanguageSupport ls = new CppLanguageSupport();
 
     private void InitializeComponents() {
         textArea = new RSyntaxTextArea(20, 60);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
         textArea.setCodeFoldingEnabled(true);
         ls.install(textArea);
+        parser = ls.getParser(textArea);
 
         sp = new RTextScrollPane(textArea);
     }

@@ -72,6 +72,7 @@ public class PropertyEditorIdeComponent implements IdeComponent {
             @Override
             public void propertyValueChanged(Property property) {
                 projectComponent.setName((String) property.getValue());
+                editorFrame.getEventManager().callEvent(EventType.COMPONENT_UPDATED, projectComponent);
                 editorFrame.getEventManager().callEvent(EventType.VISUAL_EDITOR_UPDATEUI);
             }
 
@@ -160,6 +161,7 @@ public class PropertyEditorIdeComponent implements IdeComponent {
                     } else {
                         projectComponent.getProperties().put(name, null);
                     }
+                    editorFrame.getEventManager().callEvent(EventType.COMPONENT_UPDATED, projectComponent);
                 }
 
                 @Override
@@ -188,6 +190,7 @@ public class PropertyEditorIdeComponent implements IdeComponent {
                 @Override
                 public void propertyValueChanged(Property property) {
                     projectComponent.getEvents().put(name, (String) property.getValue());
+                    editorFrame.getEventManager().callEvent(EventType.COMPONENT_UPDATED, projectComponent);
                 }
 
                 @Override

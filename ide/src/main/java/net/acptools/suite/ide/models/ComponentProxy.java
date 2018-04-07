@@ -62,7 +62,7 @@ public class ComponentProxy implements ComponentInterface {
 
     @Override
     public Module getModuleInstance() {
-        return ACPModules.getModule(parentComponent);
+        return ACPModulesRepository.INSTANCE.getModule(this);
     }
 
     public void readFromXml(Element xmlElement) {
