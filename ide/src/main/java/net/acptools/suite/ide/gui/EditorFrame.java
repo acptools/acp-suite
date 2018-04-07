@@ -228,40 +228,23 @@ public class EditorFrame extends JFrame {
         control.getController().setTheme(eclipseTheme);
 
         IdeComponent c;
-        SingleCDockable dockable;
 
         // components
         c = new ToolBoxIdeComponent(this);
-        dockable = c.dockable();
-        control.addDockable(dockable);
-        dockable.setLocation(CLocation.base().normalWest(0.25));
-        dockable.setVisible(true);
+        control.addDockable(c.dockable());
 
-        //c = new VisualEditorIdeComponent(this);
         c = new VisualGroupEditorIdeComponent(this);
-        dockable = c.dockable();
-        control.addDockable(dockable);
-        dockable.setLocation(CLocation.base().aside());
-        dockable.setVisible(true);
+        control.addDockable(c.dockable());
 
         c = new EditorIdeComponent(this);
-        dockable = c.dockable();
-        control.addDockable(dockable);
-        dockable.setLocation(CLocation.base().normalEast(0.25));
-        dockable.setVisible(true);
+        control.addDockable(c.dockable());
         code = (EditorIdeComponent) c;
 
         c = new PropertyEditorIdeComponent(this);
-        dockable = c.dockable();
-        control.addDockable(dockable);
-        dockable.setLocation(CLocation.base().normalEast(0.25));
-        dockable.setVisible(true);
+        control.addDockable(c.dockable());
 
         c = new ConsoleIdeComponent(this);
-        dockable = c.dockable();
-        control.addDockable(dockable);
-        dockable.setLocation(CLocation.base().normalSouth(0.1));
-        dockable.setVisible(true);
+        control.addDockable(c.dockable());
         console = (ConsoleIdeComponent) c;
 
         setContentPane(panel);
@@ -269,7 +252,11 @@ public class EditorFrame extends JFrame {
         try {
             control.readXML(new File("workspace.xml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                control.readXML(new File(getClass().getResource("/workspace/main.xml").getFile()));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -278,6 +265,8 @@ public class EditorFrame extends JFrame {
     private JMenu boardMenu;
 
     private JMenu debugMenu;
+
+    private JMenu workspaceMenu;
 
     private void InitializeMenuBar() {
         menuBar = new JMenuBar();
@@ -336,6 +325,19 @@ public class EditorFrame extends JFrame {
         debugMenu = new JMenu("Debug mode");
         populateDebugMenu();
         menu.add(debugMenu);
+
+        // endregion
+
+        // Build Workspace menu
+        menu = new JMenu("View");
+        menu.setMnemonic(KeyEvent.VK_V);
+        menuBar.add(menu);
+
+        // region Build Workspace submenu
+
+        workspaceMenu = new JMenu("Workspace layout");
+        populateWorkspaceMenu();
+        menu.add(workspaceMenu);
 
         // endregion
 
@@ -414,6 +416,32 @@ public class EditorFrame extends JFrame {
         item = new JCheckBoxMenuItem("Disabled", !IdeSettings.getInstance().getDebugMode());
         item.addActionListener(new DebugMenuListener(false));
         debugMenu.add(item);
+    }
+
+    private void populateWorkspaceMenu() {
+        workspaceMenu.removeAll();
+
+        JMenuItem item = new JMenuItem("Main workspace");
+        File mainWorkspaceFile = new File(getClass().getResource("/workspace/main.xml").getFile());
+        item.addActionListener(e -> {
+            try {
+                control.readXML(mainWorkspaceFile);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        workspaceMenu.add(item);
+
+        item = new JMenuItem("Alternative workspace");
+        File alternativeWorkspaceFile = new File(getClass().getResource("/workspace/alternative.xml").getFile());
+        item.addActionListener(e -> {
+            try {
+                control.readXML(alternativeWorkspaceFile);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        workspaceMenu.add(item);
 
     }
 

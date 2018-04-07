@@ -99,22 +99,22 @@
 									<root>true</root>
 									<content delegate="SplitDockStationFactory">
 										<fullscreen-action>false</fullscreen-action>
-										<node nodeId="1520978231224" orientation="VERTICAL" divider="0.7570093457943925">
-											<node nodeId="1520978231102" orientation="HORIZONTAL" divider="0.456020942408377">
-												<node nodeId="1520978234623" orientation="HORIZONTAL" divider="0.3018867924528302">
-													<leaf id="2" nodeId="1520978230679">
+										<node nodeId="1520978231224" orientation="VERTICAL" divider="0.8">
+											<node nodeId="1520978231102" orientation="HORIZONTAL" divider="0.5">
+												<node nodeId="1520978234623" orientation="HORIZONTAL" divider="0.4">
+													<leaf id="4" nodeId="1520978230679">
 														<placeholders>
 															<placeholder>dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.ToolBoxIdeComponent</placeholder>
 														</placeholders>
 													</leaf>
-													<leaf id="0" nodeId="1520978230847">
+													<leaf id="1" nodeId="1520978230847">
 														<placeholders>
 															<placeholder>dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.VisualGroupEditorIdeComponent</placeholder>
 														</placeholders>
 													</leaf>
 												</node>
-												<node nodeId="1520978237479" orientation="HORIZONTAL" divider="0.7637415621986499">
-													<leaf id="1" nodeId="1520978231100">
+												<node nodeId="1520978237479" orientation="HORIZONTAL" divider="0.6">
+													<leaf id="0" nodeId="1520978231100">
 														<placeholders>
 															<placeholder>dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.EditorIdeComponent</placeholder>
 														</placeholders>
@@ -123,14 +123,14 @@
 															<format>dock.PlaceholderList</format>
 														</placeholder-map>
 													</leaf>
-													<leaf id="3" nodeId="1520978237477">
+													<leaf id="2" nodeId="1520978237477">
 														<placeholders>
 															<placeholder>dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.PropertyEditorIdeComponent</placeholder>
 														</placeholders>
 													</leaf>
 												</node>
 											</node>
-											<leaf id="4" nodeId="1520978231222">
+											<leaf id="3" nodeId="1520978231222">
 												<placeholders>
 													<placeholder>dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.ConsoleIdeComponent</placeholder>
 												</placeholders>
@@ -146,16 +146,6 @@
 							</adjacent>
 							<children ignore="false">
 								<child>
-									<layout factory="predefined" placeholder="dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.VisualGroupEditorIdeComponent">
-										<replacement id="dockablesingle class net.acptools.suite.ide.gui.components.VisualGroupEditorIdeComponent"/>
-										<delegate id="delegate_ccontrol backup factory id">
-											<id>class net.acptools.suite.ide.gui.components.VisualGroupEditorIdeComponent</id>
-											<area/>
-										</delegate>
-									</layout>
-									<children ignore="false"/>
-								</child>
-								<child>
 									<layout factory="predefined" placeholder="dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.EditorIdeComponent">
 										<replacement id="dockablesingle class net.acptools.suite.ide.gui.components.EditorIdeComponent"/>
 										<delegate id="delegate_ccontrol backup factory id">
@@ -166,10 +156,10 @@
 									<children ignore="false"/>
 								</child>
 								<child>
-									<layout factory="predefined" placeholder="dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.ToolBoxIdeComponent">
-										<replacement id="dockablesingle class net.acptools.suite.ide.gui.components.ToolBoxIdeComponent"/>
+									<layout factory="predefined" placeholder="dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.VisualGroupEditorIdeComponent">
+										<replacement id="dockablesingle class net.acptools.suite.ide.gui.components.VisualGroupEditorIdeComponent"/>
 										<delegate id="delegate_ccontrol backup factory id">
-											<id>class net.acptools.suite.ide.gui.components.ToolBoxIdeComponent</id>
+											<id>class net.acptools.suite.ide.gui.components.VisualGroupEditorIdeComponent</id>
 											<area/>
 										</delegate>
 									</layout>
@@ -190,6 +180,16 @@
 										<replacement id="dockablesingle class net.acptools.suite.ide.gui.components.ConsoleIdeComponent"/>
 										<delegate id="delegate_ccontrol backup factory id">
 											<id>class net.acptools.suite.ide.gui.components.ConsoleIdeComponent</id>
+											<area/>
+										</delegate>
+									</layout>
+									<children ignore="false"/>
+								</child>
+								<child>
+									<layout factory="predefined" placeholder="dock.single.class\ net\.acptools\.suite\.ide\.gui\.components\.ToolBoxIdeComponent">
+										<replacement id="dockablesingle class net.acptools.suite.ide.gui.components.ToolBoxIdeComponent"/>
+										<delegate id="delegate_ccontrol backup factory id">
+											<id>class net.acptools.suite.ide.gui.components.ToolBoxIdeComponent</id>
 											<area/>
 										</delegate>
 									</layout>
