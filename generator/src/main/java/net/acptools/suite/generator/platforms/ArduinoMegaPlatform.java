@@ -24,6 +24,6 @@ public class ArduinoMegaPlatform extends ArduinoPlatform {
 
     @Override
     public String getBoardCliName() {
-        return "arduino:avr:mega";
+        return "arduino:avr:mega:cpu=atmega2560";
     }
 }
