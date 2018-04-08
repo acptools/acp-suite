@@ -11,7 +11,7 @@ public interface sym {
   public static final int SHORT = 100;
   public static final int SIGNED = 101;
   public static final int EQOP = 53;
-  public static final int IDENTIFIER = 111;
+  public static final int IDENTIFIER = 112;
   public static final int BOOL = 93;
   public static final int TYPEID = 68;
   public static final int GT = 21;
@@ -28,6 +28,7 @@ public interface sym {
   public static final int MODOP = 56;
   public static final int EXPLICIT = 41;
   public static final int COMMA = 42;
+  public static final int DEFINE = 111;
   public static final int ANDASSIGN = 19;
   public static final int LBRK = 3;
   public static final int LT = 20;
@@ -39,7 +40,7 @@ public interface sym {
   public static final int MODASSIGN = 25;
   public static final int FRIEND = 59;
   public static final int PROTECTED = 74;
-  public static final int FALSE = 113;
+  public static final int FALSE = 114;
   public static final int PLUSASSIGN = 26;
   public static final int NEQOP = 44;
   public static final int FINAL = 40;
@@ -54,7 +55,7 @@ public interface sym {
   public static final int INCLUDE = 109;
   public static final int NULLPTR = 71;
   public static final int SEPPTR = 49;
-  public static final int TRUE = 112;
+  public static final int TRUE = 113;
   public static final int LONG = 97;
   public static final int QUESTION = 18;
   public static final int WHILE = 106;
@@ -234,6 +235,7 @@ public interface sym {
   "NEW",
   "INCLUDE",
   "INCLUDE_LITERAL",
+  "DEFINE",
   "IDENTIFIER",
   "TRUE",
   "FALSE"

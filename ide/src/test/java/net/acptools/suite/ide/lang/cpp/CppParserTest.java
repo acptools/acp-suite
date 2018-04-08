@@ -46,7 +46,23 @@ public class CppParserTest {
 
 
         Logger.enableLogger();
-        textArea.setText(readFile("test01.ino"));
+        textArea.setText(readFile("test05-reader.ino"));
+        textArea.forceReparsing(parser);
+
+    }
+
+
+    @Test
+    public void testFunctionParams() throws IOException {
+        RSyntaxTextArea textArea = new RSyntaxTextArea();
+
+        CppParser parser = new CppParser(textArea);
+        textArea.putClientProperty(LanguageSupport.PROPERTY_LANGUAGE_PARSER, parser);
+        textArea.addParser(parser);
+
+
+        Logger.enableLogger();
+        textArea.setText(readFile("test01-function-params.ino"));
         textArea.forceReparsing(parser);
 
         Function fun = SemanticAnalysis.getInstance().getFunctions().get("messangerEvent");

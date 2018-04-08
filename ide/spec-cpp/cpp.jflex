@@ -206,6 +206,7 @@ identifier      = {letter}({alphanumeric}|{other_id_char})*
 
 
     "\#include"                 { return symbol(sym.INCLUDE); }
+    "\#define"                 { return symbol(sym.DEFINE); }
 
     /* Unary Operators */
 
@@ -285,7 +286,7 @@ identifier      = {letter}({alphanumeric}|{other_id_char})*
 
      \"([^\\\"]|\\.)*\"     { return symbol(sym.STRING_LITERAL, new String(yytext())); }
      \'([^\\\']|\\.)*\'     { return symbol(sym.STRING_LITERAL, new String(yytext())); }
-     \<([^\\\"]|\\.)*\>     { return symbol(sym.INCLUDE_LITERAL, new String(yytext())); }
+     \<([^\\\>]|\\.)*\>     { return symbol(sym.INCLUDE_LITERAL, new String(yytext())); }
 
     {identifier}            { return symbol(sym.IDENTIFIER, new String(yytext())); }
 

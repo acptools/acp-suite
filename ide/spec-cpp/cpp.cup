@@ -74,7 +74,7 @@ terminal PROTECTED, DECLTYPE, DEFAULT, INTEGER, STRING_LITERAL, STRING;
 terminal AUTO, BREAK, CASE, CHAR, CONTINUE, DO, DOUBLE, ELSE, FLOAT, FOR, GOTO, IF, INT, BOOL, BYTE, WORD, FLOATING,
 LONG, REGISTER, RETURN, SHORT, SIGNED, STATIC, SWITCH, UNSIGNED, VOID, WHILE, OPERATOR, NEW ;
 
-terminal INCLUDE, INCLUDE_LITERAL;
+terminal INCLUDE, INCLUDE_LITERAL, DEFINE;
 
 /**
  * Terminals with types associated  terminal java.lang.String IDENTIFIER;
@@ -118,7 +118,7 @@ non terminal forStatement, forRangeInitializer, forRangeDeclaration, ruleAux;
 
 non terminal decimal_Literal, integerSuffix;
 
-non terminal includeDef, includeFileLit;
+non terminal includeDef, includeFileLit, defineDef;
 
 
 /**
@@ -162,6 +162,7 @@ declaration
     |   emptyDeclaration                {: Logger.print("130 declaration (emptyDeclaration)"); :}
     |   attributeDecl                   {: Logger.print("130 declaration (attributeDecl)" ); :}
     |   includeDef:i                    {: Logger.print("130 declaration (includeDef) " + i); :}
+    |   defineDef:i                     {: Logger.print("130 declaration (defineDef) " + i); :}
     ;
 
 
@@ -176,6 +177,14 @@ includeDef
 includeFileLit
     ::= INCLUDE_LITERAL:il              {: Logger.print("132 includeFileLit(INCLUDE_LITERAL:il) " + il); RESULT = il; :}
     |   STRING_LITERAL:sl               {: Logger.print("132 includeFileLit(STRING_LITERAL:sl) " + sl); RESULT = sl; :}
+    ;
+
+/**
+ * Define declaration
+ */
+
+defineDef
+    ::= DEFINE declaratorId:de initializeCls:i     {: Logger.print("187 defineDef " + de + " " + i); :}
     ;
 
 /**
