@@ -321,3 +321,7 @@ nbactions.xml
 
 
 # End of https://www.gitignore.io/api/c,c++,java,maven,eclipse,netbeans,intellij,intellij+all,intellij+iml
+
+
+acp_settings.xml
+workspace.xml
