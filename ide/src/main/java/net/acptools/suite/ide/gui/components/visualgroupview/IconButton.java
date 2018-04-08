@@ -8,8 +8,7 @@ public class IconButton extends JButton {
 
     public static IconButton createButton(String iconFile) {
         IconButton ib = new IconButton();
-        ClassLoader classLoader = ib.getClass().getClassLoader();
-        URL url = classLoader.getResource(iconFile);
+        URL url = ib.getClass().getResource(iconFile);
         if (url != null) {
             ib.setIcon(new ImageIcon(url));
         }

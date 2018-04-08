@@ -44,8 +44,8 @@ public class CppCompletionProvider extends LanguageAwareCompletionProvider {
      * @param codeCP The code completion provider.
      */
     protected void addShorthandCompletions(DefaultCompletionProvider codeCP) {
-        codeCP.addCompletion(new ShorthandCompletion(codeCP, "main",
-                "int main(int argc, char **argv)"));
+        //codeCP.addCompletion(new ShorthandCompletion(codeCP, "main",
+        //"int main(int argc, char **argv)"));
 //for (int i=0; i<5000; i++) {
 //	codeCP.addCompletion(new BasicCompletion(codeCP, "Number" + i));
 //}
@@ -124,10 +124,9 @@ public class CppCompletionProvider extends LanguageAwareCompletionProvider {
     protected void loadCodeCompletionsFromXml(DefaultCompletionProvider cp) {
         // First try loading resource (running from demo jar), then try
         // accessing file (debugging in Eclipse).
-        ClassLoader cl = getClass().getClassLoader();
         String res = getXmlResource();
         if (res != null) { // Subclasses may specify a null value
-            InputStream in = cl.getResourceAsStream(res);
+            InputStream in = getClass().getResourceAsStream(res);
             try {
                 if (in != null) {
                     cp.loadFromXML(in);

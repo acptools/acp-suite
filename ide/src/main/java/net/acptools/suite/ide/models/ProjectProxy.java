@@ -7,6 +7,7 @@ import net.acptools.suite.generator.models.project.Component;
 import net.acptools.suite.generator.models.project.EepromItem;
 import net.acptools.suite.generator.models.project.Project;
 import net.acptools.suite.generator.utils.XmlUtils;
+import net.acptools.suite.ide.utils.ResourceFiles;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -187,9 +188,7 @@ public class ProjectProxy implements ComponentInterface {
 
     @Override
     public Module getModuleInstance() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL filePath = Objects.requireNonNull(classLoader.getResource("project-component.xml"));
-        File file = new File(filePath.getFile());
+        File file = ResourceFiles.getResourceAsFile("project-component.xml");
         return ComponentType.loadFromFile(file);
     }
 
@@ -303,7 +302,7 @@ public class ProjectProxy implements ComponentInterface {
         try {
             parentProject.setWatchdogLevel(Integer.parseInt(properties.get("WatchdogLevel")));
         } catch (NumberFormatException e) {
-            
+
         }
         parentProject.setEepromLayoutVersion(properties.get("EepromLayoutVersion"));
 

@@ -3,7 +3,6 @@ package net.acptools.suite.ide.gui;
 import bibliothek.extension.gui.dock.theme.EclipseTheme;
 import bibliothek.gui.DockTheme;
 import bibliothek.gui.dock.common.CControl;
-import bibliothek.gui.dock.common.CLocation;
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
 import bibliothek.gui.dock.common.SingleCDockable;
 import net.acptools.suite.generator.models.modules.Module;
@@ -17,6 +16,7 @@ import net.acptools.suite.ide.platform.Platform;
 import net.acptools.suite.ide.models.ComponentProxy;
 import net.acptools.suite.ide.models.ProjectProxy;
 import net.acptools.suite.ide.utils.BoardPort;
+import net.acptools.suite.ide.utils.ResourceFiles;
 import net.acptools.suite.ide.utils.event.EventManager;
 import net.acptools.suite.ide.utils.event.EventType;
 import net.acptools.suite.ide.utils.view.StubMenuListener;
@@ -30,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class EditorFrame extends JFrame {
 
         setTitle("Text Editor Demo");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(800, 600));
         //setPreferredSize(new Dimension(1024, 800));
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
@@ -117,7 +119,7 @@ public class EditorFrame extends JFrame {
     private void closeProject(EventType eventType, Object o) {
         eventManager.callEvent(EventType.PROJECT_PRE_SAVE);
         try {
-            control.writeXML(new File("workspace.xml"));
+            control.writeXML(App.getContentFile("workspace.xml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -250,10 +252,10 @@ public class EditorFrame extends JFrame {
         setContentPane(panel);
 
         try {
-            control.readXML(new File("workspace.xml"));
+            control.readXML(App.getContentFile("workspace.xml"));
         } catch (IOException e) {
             try {
-                control.readXML(new File(getClass().getResource("/workspace/main.xml").getFile()));
+                control.readXML(ResourceFiles.getResourceAsFile("workspace/main.xml"));
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -422,7 +424,7 @@ public class EditorFrame extends JFrame {
         workspaceMenu.removeAll();
 
         JMenuItem item = new JMenuItem("Main workspace");
-        File mainWorkspaceFile = new File(getClass().getResource("/workspace/main.xml").getFile());
+        File mainWorkspaceFile = ResourceFiles.getResourceAsFile("workspace/main.xml");
         item.addActionListener(e -> {
             try {
                 control.readXML(mainWorkspaceFile);
@@ -433,7 +435,7 @@ public class EditorFrame extends JFrame {
         workspaceMenu.add(item);
 
         item = new JMenuItem("Alternative workspace");
-        File alternativeWorkspaceFile = new File(getClass().getResource("/workspace/alternative.xml").getFile());
+        File alternativeWorkspaceFile = ResourceFiles.getResourceAsFile("workspace/alternative.xml");
         item.addActionListener(e -> {
             try {
                 control.readXML(alternativeWorkspaceFile);

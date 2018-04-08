@@ -2,9 +2,11 @@ package net.acptools.suite.ide.models;
 
 import net.acptools.suite.generator.models.components.ConfigurationException;
 import net.acptools.suite.generator.utils.XmlUtils;
+import net.acptools.suite.ide.App;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -47,16 +49,20 @@ public class IdeSettings {
     private String arduinoLibraryFolder;
     private String acprogModulesFolder;
     private String arduinoCli;
-    private List<IdeSettingsProject> recentProjects;
+    private List<IdeSettingsProject> recentProjects = new ArrayList<>();
 
     private IdeSettings() {
         loadSettingsFromFile();
     }
 
     private File getSettingsXmlFile() {
-        File f = new File(SETTINGS_FILENAME);
+        File f = App.getContentFile(SETTINGS_FILENAME);
         if (!f.exists()) {
             initializedEmpty = false;
+            arduinoLibraryFolder = new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "\\Arduino\\libraries";
+            acprogModulesFolder = "";
+            arduinoCli = "C:\\Program Files (x86)\\Arduino\\arduino_debug.exe";
+            recentProjects = new ArrayList<>();
             saveSettingsToFile(f);
         }
         return f;
