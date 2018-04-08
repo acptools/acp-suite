@@ -99,6 +99,12 @@ public class ToolBoxIdeComponent implements IdeComponent, MouseListener, KeyList
 
         scrollPane = new JScrollPane(tree);
         scrollPane.getVerticalScrollBar().setUnitIncrement(100);
+
+        editorFrame.getEventManager().registerObserver(EventType.PREFERENCES_CHANGED, (eventType, o) -> {
+            top.removeAllChildren();
+            createNodes(top);
+            expandAllNodes(tree, 0, tree.getRowCount());
+        });
     }
 
     public JComponent render() {

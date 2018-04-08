@@ -2,6 +2,7 @@ package net.acptools.suite.ide.gui;
 
 import net.acptools.suite.ide.models.IdeSettings;
 import net.acptools.suite.ide.gui.generated.SettingsFrameGenerated;
+import net.acptools.suite.ide.utils.event.EventType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,6 +49,9 @@ public class SettingsFrame extends SettingsFrameGenerated {
             IdeSettings.getInstance().setAcprogModulesFolder(acprogModulesFolder.getText());
             IdeSettings.getInstance().saveSettingsToFile();
             SettingsFrame.this.dispose();
+            if (EditorFrame.instance != null) {
+                EditorFrame.instance.getEventManager().callEvent(EventType.PREFERENCES_CHANGED);
+            }
         });
     }
 
