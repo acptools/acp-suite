@@ -75,6 +75,20 @@ public class EditorFrame extends JFrame {
         //setPreferredSize(new Dimension(1024, 800));
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (JOptionPane.showConfirmDialog(EditorFrame.this,
+                        "Are you sure to close this window?", "Really Closing?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                    closeProject(null, null);
+                }
+            }
+        });
+
     }
 
     private void InitializeEvents() {
@@ -84,12 +98,15 @@ public class EditorFrame extends JFrame {
         eventManager.registerObserver(EventType.QUIT, this::closeProject);
 
         eventManager.registerObserver(EventType.BUILD, (e, o) -> {
+            saveProject(null, null);
             new Thread(this::compilerBuild).start();
         });
         eventManager.registerObserver(EventType.VERIFY, (e, o) -> {
+            saveProject(null, null);
             new Thread(this::compilerVerify).start();
         });
         eventManager.registerObserver(EventType.UPLOAD, (e, o) -> {
+            saveProject(null, null);
             new Thread(this::compilerUpload).start();
         });
         eventManager.registerObserver(EventType.HELP_ABOUT, this::helpAbout);
@@ -105,19 +122,19 @@ public class EditorFrame extends JFrame {
     }
 
     private void openProject(EventType eventType, Object o) {
-        eventManager.callEvent(EventType.PROJECT_PRE_SAVE);
+        eventManager.callEventAndWait(EventType.PROJECT_PRE_SAVE);
         ideProject.save(ConsoleIde.instance);
         dispose();
         App.openProjectChooser();
     }
 
     private void saveProject(EventType eventType, Object o) {
-        eventManager.callEvent(EventType.PROJECT_PRE_SAVE);
+        eventManager.callEventAndWait(EventType.PROJECT_PRE_SAVE);
         ideProject.save(ConsoleIde.instance);
     }
 
     private void closeProject(EventType eventType, Object o) {
-        eventManager.callEvent(EventType.PROJECT_PRE_SAVE);
+        eventManager.callEventAndWait(EventType.PROJECT_PRE_SAVE);
         try {
             control.writeXML(App.getContentFile("workspace.xml"));
         } catch (IOException e) {
@@ -158,10 +175,7 @@ public class EditorFrame extends JFrame {
     }
 
     private boolean compilerBuild() {
-        eventManager.callEvent(EventType.PROJECT_PRE_SAVE);
-
-        if (ideProject.save(ConsoleIde.instance) &&
-                ideProject.build(ConsoleIde.instance, false)) {
+        if (ideProject.build(ConsoleIde.instance, false)) {
             ConsoleIde.instance.println("Build SUCCESS");
             return true;
         }
@@ -170,7 +184,6 @@ public class EditorFrame extends JFrame {
 
     private boolean compilerVerify() {
         if (compilerBuild()) {
-
             if (ideProject.verify(ConsoleIde.instance)) {
                 ConsoleIde.instance.println("Verify SUCCESS");
                 return true;
@@ -181,7 +194,6 @@ public class EditorFrame extends JFrame {
 
     private boolean compilerUpload() {
         if (compilerBuild()) {
-
             if (ideProject.upload(ConsoleIde.instance, IdeSettings.getInstance().getSerialPort())) {
                 ConsoleIde.instance.println("Upload SUCCESS");
                 return true;

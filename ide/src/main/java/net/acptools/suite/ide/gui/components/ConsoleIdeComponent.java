@@ -97,7 +97,7 @@ public class ConsoleIdeComponent implements IdeComponent, ConsoleInterface {
 
     @Override
     public int runProccess(String proccess) {
-        appendToPane(textPane, "> " + proccess + "\n", Color.GRAY);
+        SwingUtilities.invokeLater(() -> appendToPane(textPane, "> " + proccess + "\n", Color.GRAY));
         return ProcessUtils.run(proccess, (process) -> {
             BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader inputErr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -105,7 +105,8 @@ public class ConsoleIdeComponent implements IdeComponent, ConsoleInterface {
                 String line;
                 try {
                     while ((line = input.readLine()) != null) {
-                        println(line);
+                        final String fline = line;
+                        SwingUtilities.invokeLater(() -> println(fline));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -115,7 +116,8 @@ public class ConsoleIdeComponent implements IdeComponent, ConsoleInterface {
                 String line;
                 try {
                     while ((line = inputErr.readLine()) != null) {
-                        errln(line);
+                        final String fline = line;
+                        SwingUtilities.invokeLater(() -> errln(fline));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
