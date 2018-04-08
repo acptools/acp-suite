@@ -60,6 +60,11 @@ abstract public class Module {
     private String name;
 
     /**
+     * Readable short name of the component type.
+     */
+    private String shortName;
+
+    /**
      * Component type description for programmer.
      */
     private String description;
@@ -92,6 +97,16 @@ abstract public class Module {
 
     public void setName(String name) {
         this.name = name;
+        int startIndex = name.lastIndexOf(".");
+        setShortName(name.substring(startIndex + 1));
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public String getDescription() {
@@ -201,7 +216,7 @@ abstract public class Module {
         }
 
         // Read name
-        name = xmlModule.getAttribute("name").trim();
+        setName(xmlModule.getAttribute("name").trim());
         if (name.isEmpty()) {
             throw new ConfigurationException("Name of the module cannot be empty.");
         }

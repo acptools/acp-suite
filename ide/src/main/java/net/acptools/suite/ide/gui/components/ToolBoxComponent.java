@@ -28,6 +28,6 @@ public class ToolBoxComponent implements ActionListener {
 
     @Override
     public String toString() {
-        return module.getName();
+        return module.getShortName();
     }
 }

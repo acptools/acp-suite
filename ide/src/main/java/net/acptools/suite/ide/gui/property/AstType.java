@@ -1,5 +1,6 @@
 package net.acptools.suite.ide.gui.property;
 
+import net.acptools.suite.generator.models.components.Event;
 import net.acptools.suite.ide.gui.EditorFrame;
 import net.acptools.suite.ide.lang.cpp.core.Function;
 import net.acptools.suite.ide.lang.cpp.util.SemanticAnalysis;
@@ -19,9 +20,16 @@ import java.awt.event.*;
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AstType extends StringType {
+
+    protected Event eventProperty;
+
+    public AstType(Event eventProperty) {
+        this.eventProperty = eventProperty;
+    }
 
     /**
      * Cell editor for strings.
@@ -61,6 +69,7 @@ public class AstType extends StringType {
 
             // Inicializácia
 
+
             ///////////////////////////////////////////////
             // JComboBox                  // v // + // f //
             ///////////////////////////////////////////////
@@ -91,7 +100,7 @@ public class AstType extends StringType {
                 public void setValue(Object value) {
                     editorTextField.setModel(new DefaultComboBoxModel<>(getAvailableFunctions()));
                     String newValue = (value != null) ? value.toString() : "";
-                    if(newValue.isEmpty()) {
+                    if (newValue.isEmpty()) {
                         newValue = null;
                     }
                     editorTextField.setSelectedItem(newValue);
@@ -107,7 +116,8 @@ public class AstType extends StringType {
                 //EditorFrame.instance.code.createOrFindMethod();
             });
             findFunctionButton.addActionListener(e -> {
-                EditorFrame.instance.code.createOrFindMethod((String) editorTextField.getSelectedItem());
+                cancelCellEditing();
+                EditorFrame.instance.code.createOrFindMethod((String) editorTextField.getSelectedItem(), eventProperty.getParameters());
             });
         }
 
@@ -254,6 +264,12 @@ public class AstType extends StringType {
             return getComponent();
         }
 
+        private Event eventProperty;
+
+        public void setEventProperty(Event eventProperty) {
+            this.eventProperty = eventProperty;
+        }
+
 
 //
 //  Protected EditorDelegate class
@@ -395,6 +411,7 @@ public class AstType extends StringType {
 
     @Override
     public TableCellEditor getValueEditor(PropertiesPanel propertiesPanel) {
+        editor.setEventProperty(eventProperty);
         return editor;
     }
 

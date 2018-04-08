@@ -2,6 +2,7 @@ package net.acptools.suite.ide.gui.components;
 
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
 import bibliothek.gui.dock.common.SingleCDockable;
+import net.acptools.suite.generator.models.components.Event;
 import net.acptools.suite.ide.gui.EditorFrame;
 import net.acptools.suite.ide.lang.LanguageSupport;
 import net.acptools.suite.ide.lang.cpp.CppLanguageSupport;
@@ -22,6 +23,9 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 import javax.swing.*;
 import javax.swing.text.Element;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EditorIdeComponent implements IdeComponent {
     private final EditorFrame editorFrame;
@@ -73,16 +77,19 @@ public class EditorIdeComponent implements IdeComponent {
         return new DefaultSingleCDockable(getClass().toString(), "Editor", render());
     }
 
-    public void createOrFindMethod(String methodName) {
-        if (SemanticAnalysis.getInstance().getFunctions().containsKey(methodName)) {
-            Function function = SemanticAnalysis.getInstance().getFunctions().get(methodName);
+    public void createOrFindMethod(String functionName, List<Event.ParameterType> parameters) {
+        if (SemanticAnalysis.getInstance().getFunctions().containsKey(functionName)) {
+            Function function = SemanticAnalysis.getInstance().getFunctions().get(functionName);
             System.out.println("Funkcia existuje, oznacime ju v zdrojovom kode. " + function.toString());
         } else {
-            String newFunction = "\nvoid " + methodName + "() {\n\t// TODO: implement your action here\n}\n";
+            List<String> params = new ArrayList<>(parameters.size());
+            parameters.forEach(parameterType -> {
+                params.add(parameterType.getType() + " " + parameterType.getName());
+            });
+            String newFunction = "\nvoid " + functionName + "(" + String.join(", ", params) + ") {\n\t// TODO: implement your action here\n}\n";
             textArea.append(newFunction);
             // TODO: oznacit pridany komentar v zdrojovom kode!
         }
     }
-
 
 }

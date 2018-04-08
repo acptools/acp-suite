@@ -58,7 +58,7 @@ public class PropertyEditorIdeComponent implements IdeComponent {
         ComponentType componentType = (ComponentType) module;
 
         ComposedProperty mainProperty = new ComposedProperty();
-        mainProperty.setLabel(module.getName());
+        mainProperty.setLabel(module.getShortName());
         mainProperty.setHint(module.getDescription());
         ComposedProperty.PropertyList mainSubproperties = mainProperty.getSubproperties();
 
@@ -89,8 +89,8 @@ public class PropertyEditorIdeComponent implements IdeComponent {
         SimpleProperty propertyType = new SimpleProperty(new StringType(), projectComponent.getType());
         propertyType.setReadOnly(true);
         propertyType.setName("Typ komponentu");
-        propertyType.setLabel("Typ komponentu");
-        propertyType.setHint("Tu by mohol prist popis tohto typu komponentu.");
+        propertyType.setLabel(module.getShortName());
+        propertyType.setHint(module.getDescription());
 
 
         ComposedProperty propertiesProperty = new ComposedProperty();
@@ -176,10 +176,20 @@ public class PropertyEditorIdeComponent implements IdeComponent {
     private void initializeEvents(ComposedProperty.PropertyList subproperties, ComponentType componentType) {
         Map<String, Event> events = componentType.getEvents();
         events.forEach((name, property) -> {
-            Property prop = new SimpleProperty(new AstType(), "");
+            Property prop = new SimpleProperty(new AstType(property), "");
             prop.setName(name);
             prop.setLabel(name);
-            prop.setHint(property.getDescription());
+            StringBuilder hint = new StringBuilder("<html>");
+            hint.append("<p>").append(property.getDescription()).append("</p>");
+            if (property.getParameters().size() > 0) {
+                hint.append("<p><b>Event parameters:</b></p><table>");
+                for (Event.ParameterType parameterType : property.getParameters()) {
+                    hint.append("<tr><td>").append(parameterType.getType()).append("</td><td>").append(parameterType.getName()).append("</td></tr>");
+                }
+                hint.append("</table>");
+            }
+            hint.append("</html>");
+            prop.setHint(hint.toString());
             prop.setValue(projectComponent.getEvents().get(name));
             prop.addPropertyListener(new PropertyListener() {
                 @Override
