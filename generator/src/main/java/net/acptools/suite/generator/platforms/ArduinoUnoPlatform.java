@@ -19,6 +19,6 @@ public class ArduinoUnoPlatform extends ArduinoPlatform {
 
     @Override
     public String getBoardCliName() {
-        return "arduino:avr:uno:cpu=atmega328p";
+        return "arduino:avr:uno";
     }
 }

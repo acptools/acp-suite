@@ -19,6 +19,6 @@ public class ArduinoNanoPlatform extends ArduinoPlatform {
 
     @Override
     public String getBoardCliName() {
-        return "arduino:avr:nano:cpu=atmega168";
+        return "arduino:avr:nano";
     }
 }
