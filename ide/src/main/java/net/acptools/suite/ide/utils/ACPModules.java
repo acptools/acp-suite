@@ -3,6 +3,7 @@ package net.acptools.suite.ide.utils;
 import net.acptools.suite.generator.models.modules.Module;
 import net.acptools.suite.generator.models.project.Component;
 import net.acptools.suite.ide.models.IdeSettings;
+import net.acptools.suite.ide.models.ModuleProxy;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ACPModules {
         if (children != null) {
             for (File child : children) {
                 if (Module.DESCRIPTION_FILE.equals(child.getName())) {
-                    all.add(Module.loadFromFile(new File(file, Module.DESCRIPTION_FILE)));
+                    all.add(ModuleProxy.loadFromFile(new File(file, Module.DESCRIPTION_FILE)).getModule());
                 }
                 addTree(child, all);
             }

@@ -1,14 +1,19 @@
 package net.acptools.suite.ide.lang.cpp.util;
 
 import java_cup.runtime.ComplexSymbolFactory;
-import java_cup.runtime.Symbol;
+import net.acptools.suite.generator.models.modules.Module;
 import net.acptools.suite.ide.lang.cpp.CppParser;
 import net.acptools.suite.ide.lang.cpp.core.*;
 import net.acptools.suite.ide.lang.cpp.generated.Parser;
+import net.acptools.suite.ide.models.ComponentProxy;
+import net.acptools.suite.ide.models.IdeProject;
+import net.acptools.suite.ide.models.IdeSettings;
+import net.acptools.suite.ide.models.ModuleProxy;
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.parser.DefaultParserNotice;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 
+import java.io.File;
 import java.util.*;
 
 public class SemanticAnalysis {
@@ -389,5 +394,68 @@ public class SemanticAnalysis {
 
     public boolean hasInclude(String fileName) {
         return getIncludes().containsKey(fileName);
+    }
+
+    private Map<String, ClassFile> classMap = null;
+
+    public Map<String, ClassFile> getClasses() {
+        if (classMap == null) {
+            classMap = new HashMap<>();
+
+            ClassFile cf;
+            Method m;
+
+            // Serial
+            cf = new ClassFile("Serial");
+            classMap.put(cf.getName(), cf);
+            // Serial.begin
+            m = new Method("begin", new ArrayList<>());
+            m.setReturnType(new Type("void"));
+            m.setEnclosingClassName(cf.getName());
+            cf.addMethod(m);
+            // Serial.print
+            m = new Method("print", new ArrayList<>());
+            m.setReturnType(new Type("void"));
+            m.setEnclosingClassName(cf.getName());
+            cf.addMethod(m);
+            // Serial.println
+            m = new Method("println", new ArrayList<>());
+            m.setReturnType(new Type("void"));
+            m.setEnclosingClassName(cf.getName());
+            cf.addMethod(m);
+        }
+
+        return classMap;
+    }
+
+    public ClassFile getClassForIdentifier(String text) {
+        ClassFile cf = null;
+
+        cf = getClasses().getOrDefault(text, null);
+        if (cf != null) {
+            return cf;
+        }
+
+        ComponentProxy componentProxy = IdeProject.getInstance().getProject().getComponentsMap().getOrDefault(text, null);
+        if (componentProxy != null) {
+            String type = componentProxy.getType().toString();
+            initComponentClass(type);
+            cf = getClasses().getOrDefault(type, null);
+            if (cf != null) {
+                return cf;
+            }
+        }
+
+        return null;
+    }
+
+    private void initComponentClass(String componentClass) {
+        if (getClasses().containsKey(componentClass)) {
+            return;
+        }
+        ModuleProxy moduleProxy = ModuleProxy.loadFromFile(new File(IdeSettings.getInstance().getAcprogModulesFolder() + "/" + componentClass.replace('.', '/'), Module.DESCRIPTION_FILE));
+        if (moduleProxy.getClassFile() != null) {
+            getClasses().put(componentClass, moduleProxy.getClassFile());
+        }
     }
 }

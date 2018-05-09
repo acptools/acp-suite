@@ -10,11 +10,16 @@
  */
 package net.acptools.suite.ide.lang.cpp;
 
+import net.acptools.suite.ide.lang.cpp.core.ClassFile;
+import net.acptools.suite.ide.lang.cpp.core.Method;
+import net.acptools.suite.ide.lang.cpp.core.Type;
 import org.fife.ui.autocomplete.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -22,8 +27,6 @@ import java.io.InputStream;
  * code completion support and parameter assistance for the C Standard Library.
  * This information is read from an XML file.
  *
- * @author Robert Futrell
- * @version 1.0
  */
 public class CppCompletionProvider extends LanguageAwareCompletionProvider {
 
@@ -38,34 +41,14 @@ public class CppCompletionProvider extends LanguageAwareCompletionProvider {
     }
 
 
-    /**
-     * Adds shorthand completions to the code completion provider.
-     *
-     * @param codeCP The code completion provider.
-     */
-    protected void addShorthandCompletions(DefaultCompletionProvider codeCP) {
-        //codeCP.addCompletion(new ShorthandCompletion(codeCP, "main",
-        //"int main(int argc, char **argv)"));
-//for (int i=0; i<5000; i++) {
-//	codeCP.addCompletion(new BasicCompletion(codeCP, "Number" + i));
-//}
-    }
-
 
     /**
      * Returns the provider to use when editing code.
      *
      * @return The provider.
-     * @see #createCommentCompletionProvider()
-     * @see #createStringCompletionProvider()
-     * @see #loadCodeCompletionsFromXml(DefaultCompletionProvider)
-     * @see #addShorthandCompletions(DefaultCompletionProvider)
      */
     protected CompletionProvider createCodeCompletionProvider() {
-        DefaultCompletionProvider cp = new DefaultCompletionProvider();
-        loadCodeCompletionsFromXml(cp);
-        addShorthandCompletions(cp);
-        return cp;
+        return new SourceCompletionProvider();
 
     }
 
@@ -101,43 +84,6 @@ public class CppCompletionProvider extends LanguageAwareCompletionProvider {
         cp.addCompletion(new BasicCompletion(cp, "%u", "unsigned int", "Prints an unsigned integer"));
         cp.addCompletion(new BasicCompletion(cp, "\\n", "Newline", "Prints a newline"));
         return cp;
-    }
-
-
-    /**
-     * Returns the name of the XML resource to load (on classpath or a file).
-     *
-     * @return The resource to load.
-     */
-    protected String getXmlResource() {
-        return "data/c.xml";
-    }
-
-
-    /**
-     * Called from {@link #createCodeCompletionProvider()} to actually load
-     * the completions from XML.  Subclasses that override that method will
-     * want to call this one.
-     *
-     * @param cp The code completion provider.
-     */
-    protected void loadCodeCompletionsFromXml(DefaultCompletionProvider cp) {
-        // First try loading resource (running from demo jar), then try
-        // accessing file (debugging in Eclipse).
-        String res = getXmlResource();
-        if (res != null) { // Subclasses may specify a null value
-            InputStream in = getClass().getResourceAsStream(res);
-            try {
-                if (in != null) {
-                    cp.loadFromXML(in);
-                    in.close();
-                } else {
-                    cp.loadFromXML(new File(res));
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
     }
 
 

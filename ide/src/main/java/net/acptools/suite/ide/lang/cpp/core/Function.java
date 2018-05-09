@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Function extends ScopedEntity implements Identifier {
 
     private Type returnType = new Type("void"); // Default Return Type
-    private ArrayList<Parameter> functionParameter;
+    protected ArrayList<Parameter> functionParameter;
     private Type returnedType = new Type("void"); // Default Return Type
 
 //	public Function(String name, Type returnType, ArrayList<Variable> parameters) {

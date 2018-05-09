@@ -19,7 +19,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.net.URL;
 import java.util.*;
 
 public class ProjectProxy implements ComponentInterface {
@@ -198,12 +197,6 @@ public class ProjectProxy implements ComponentInterface {
     // --------------------------------------------------------------------------------------
 
     private void readConfiguration(Element xmlRoot) {
-        createDefaultConfiguration();
-
-        // Initialize project properties
-        properties.put("EepromLayoutVersion", parentProject.getEepromLayoutVersion());
-        properties.put("PlatformName", parentProject.getPlatformName());
-        properties.put("WatchdogLevel", Integer.toString(parentProject.getWatchdogLevel()));
 
         // Add all other components
         Map<String, ComponentProxy> componentsMap = getComponentsMap();
@@ -251,7 +244,7 @@ public class ProjectProxy implements ComponentInterface {
         Map<String, ComponentProxy> componentsMap = getComponentsMap();
 
         // Add to undefined group all rest components
-        int size = componentsMap.size() - selectedComponents.size();
+        int size = (componentsMap.size() + 1) - selectedComponents.size();
 
         if (size > 0) {
             // find and add rest component
@@ -279,14 +272,23 @@ public class ProjectProxy implements ComponentInterface {
             Document doc = db.parse(xmlFile);
             ProjectProxy result = new ProjectProxy(parentProject);
             Element xmlRoot = doc.getDocumentElement();
-            Element ideXmlRoot = XmlUtils.getChildElement(xmlRoot, "ide");
 
+            // Create default configuration
+            result.createDefaultConfiguration();
+
+            // Initialize project properties
+            result.properties.put("EepromLayoutVersion", parentProject.getEepromLayoutVersion());
+            result.properties.put("PlatformName", parentProject.getPlatformName());
+            result.properties.put("WatchdogLevel", Integer.toString(parentProject.getWatchdogLevel()));
+
+            // Initialize component groups
+            Element ideXmlRoot = XmlUtils.getChildElement(xmlRoot, "ide");
             if (ideXmlRoot != null) {
                 result.readConfiguration(ideXmlRoot);
             } else {
-                result.createDefaultConfiguration();
                 result.assignRestComponents();
             }
+
             return result;
         } catch (Exception e) {
             throw new ConfigurationException("Loading of project configuration failed.", e);
